@@ -1,0 +1,30 @@
+{
+  "name": "github-changelog-generator",
+  "version": "0.0.0",
+  "description": "Generate changelog files from the project's Github PRs",
+  "main": "dist/index.js",
+  "scripts": {
+    "lint": "eslint src",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "transpile": "rm -rf dist/* && babel src --copy-files --out-dir dist"
+  },
+  "author": "Ricardo Lopes",
+  "license": "MIT",
+  "bin": {
+    "github-changelog-generator": "bin/github-changelog-generator.js"
+  },
+  "dependencies": {
+    "bluebird": "^3.4.6",
+    "github": "^6.1.0",
+    "lodash": "^4.17.2",
+    "moment": "^2.17.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.18.0",
+    "babel-core": "^6.18.2",
+    "babel-polyfill": "^6.16.0",
+    "babel-preset-latest": "^6.16.0",
+    "eslint": "^3.10.2",
+    "eslint-config-seegno": "^8.0.1"
+  }
+}
