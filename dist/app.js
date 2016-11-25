@@ -94,7 +94,7 @@ var getAllReleases = function () {
             if (futureRelease) {
               releases.unshift({
                 created_at: moment().format(),
-                html_url: 'https://github.com/uphold/backend/releases/tag/' + futureRelease,
+                html_url: 'https://github.com/' + owner + '/' + repo + '/releases/tag/' + futureRelease,
                 name: futureRelease
               });
             }
@@ -322,7 +322,7 @@ function assignPrToRelease(releases, pr) {
         for (var _iterator2 = release.prs[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
           var pr = _step2.value;
 
-          changelog.push('- ' + pr.title + ' [' + pr.number + '](' + pr.html_url + ') ([' + pr.user.login + '](' + pr.user.html_url + '))\n');
+          changelog.push('- ' + pr.title + ' [\\#' + pr.number + '](' + pr.html_url + ') ([' + pr.user.login + '](' + pr.user.html_url + '))\n');
         }
       } catch (err) {
         _didIteratorError2 = true;
