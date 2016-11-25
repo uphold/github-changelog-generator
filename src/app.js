@@ -72,7 +72,7 @@ async function getAllReleases() {
   if (futureRelease) {
     releases.unshift({
       created_at: moment().format(),
-      html_url: `https://github.com/uphold/backend/releases/tag/${futureRelease}`,
+      html_url: `https://github.com/${owner}/${repo}/releases/tag/${futureRelease}`,
       name: futureRelease
     });
   }
