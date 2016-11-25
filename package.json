@@ -8,7 +8,7 @@
     "lint": "eslint src",
     "test": "echo \"Error: no test specified\" && exit 1",
     "transpile": "rm -rf dist/* && babel src --copy-files --out-dir dist",
-    "version": "FUTURE_RELEASE=$npm_package_version npm run changelog && npm run transpile && git add -A CHANGELOG.md dist"
+    "version": "npm run transpile && FUTURE_RELEASE=$npm_package_version npm run changelog && git add -A CHANGELOG.md dist"
   },
   "author": "Ricardo Lopes",
   "license": "MIT",
