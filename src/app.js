@@ -3,7 +3,7 @@
  * Module dependencies.
  */
 
-const { assign, chain, concat, flatten, find, range } = require('lodash');
+const { assign, chain, concat, has, flatten, find, range } = require('lodash');
 const GitHubApi = require('github');
 const Promise = require('bluebird');
 const moment = require('moment');
@@ -43,7 +43,12 @@ function assignPrToRelease(releases, pr) {
  */
 
 async function getResultsFromNextPages(results, fn) {
-  const lastPage = results.meta.link.match(/<[^>]+[&?]page=([0-9]+)[^>]+>; rel="last"/)[1];
+  let lastPage = 1;
+
+  if (has(results, 'meta.link')) {
+    lastPage = results.meta.link.match(/<[^>]+[&?]page=([0-9]+)[^>]+>; rel="last"/)[1];
+  }
+
   const pages = range(2, lastPage + 1);
 
   return concat(results, flatten(await Promise.map(pages, fn, { concurrency })));
