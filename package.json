@@ -4,7 +4,7 @@
   "description": "Generate changelog files from the project's Github PRs",
   "main": "dist/index.js",
   "scripts": {
-    "changelog": "OWNER=uphold REPO=github-changelog-generator github-changelog-generator > CHANGELOG.md",
+    "changelog": "OWNER=uphold REPO=github-changelog-generator ./bin/github-changelog-generator.js > CHANGELOG.md",
     "lint": "eslint src",
     "test": "echo \"Error: no test specified\" && exit 1",
     "transpile": "rm -rf dist/* && babel src --copy-files --out-dir dist",
@@ -13,7 +13,7 @@
   "author": "Ricardo Lopes",
   "license": "MIT",
   "bin": {
-    "github-changelog-generator": "bin/github-changelog-generator.js"
+    "github-changelog-generator": "./bin/github-changelog-generator.js"
   },
   "dependencies": {
     "babel-polyfill": "^6.16.0",
