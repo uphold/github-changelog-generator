@@ -21,3 +21,8 @@ $ OWNER=uphold REPO=github-changelog-generator FUTURE_RELEASE=1.2.3 github-chang
 ```
 
 The `FUTURE_RELEASE` option is optional. If you just want to build a new changelog without a new release, you can skip that option, and `github-changelog-generator` will create a changelog for existing releases only.
+
+## Release
+```sh
+npm version [<newversion> | major | minor | patch] -m "Release %s"
+```
