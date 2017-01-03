@@ -7,16 +7,32 @@ const { assign, chain, concat, has, flatten, find, range } = require('lodash');
 const GitHubApi = require('github');
 const Promise = require('bluebird');
 const moment = require('moment');
+const program = require('commander');
+
+/**
+ * Command-line program definition.
+ */
+
+program
+  .option('-o, --owner <name>', '[required] owner of the repository')
+  .option('-r, --repo <name>', '[required] name of the repository')
+  .option('-f, --future-release <version>', '[optional] specify the next release tag')
+  .description('Run Github changelog generator.')
+  .parse(process.argv);
 
 /**
  * Options.
  */
 
 const concurrency = 20;
-const futureRelease = process.env.FUTURE_RELEASE;
+const { futureRelease, owner, repo } = program;
 const token = process.env.GITHUB_TOKEN;
-const owner = process.env.OWNER;
-const repo = process.env.REPO;
+
+if (!owner || !repo) {
+  process.stderr.write(`  Missing required options.\n${program.helpInformation()}`);
+
+  process.exit(1);
+}
 
 /**
  * Set up Github API connection.
