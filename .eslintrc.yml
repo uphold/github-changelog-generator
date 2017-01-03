@@ -3,4 +3,5 @@ extends: seegno
 rules:
   id-match: 0
   no-process-env: 0
+  no-process-exit: 0
   no-return-assign: 0
