@@ -19,24 +19,25 @@ $ github-changelog-generator --help
 
   Options:
 
-    -h, --help                      output usage information
-    -o, --owner <name>              [required] owner of the repository
-    -r, --repo <name>               [required] name of the repository
-    -f, --future-release <version>  [optional] specify the next release tag
+    -h, --help                       output usage information
+    -o, --owner <name>               [required] owner of the repository
+    -r, --repo <name>                [required] name of the repository
+    -f, --future-release <version>   [optional] specify the next release version
+    -t, --future-release-tag <name>  [optional] specify the next release tag name if it is different from the release version
 ```
 
 To generate a changelog for your Github project, use the following command:
 
 ```sh
-$ github-changelog-generator --owner=<repo_owner> --repo=<repo_name> --future-release=<release_name>  > <your_changelog_file>
+$ github-changelog-generator --owner=<repo_owner> --repo=<repo_name> --future-release=<release_name> --future-release-tag=<release_tag_name>  > <your_changelog_file>
 ```
 
-The `--future-release` option is optional. If you just want to build a new changelog without a new release, you can skip that option, and `github-changelog-generator` will create a changelog for existing releases only.
+The `--future-release` and `--future-release-tag` options are optional. If you just want to build a new changelog without a new release, you can skip those options, and `github-changelog-generator` will create a changelog for existing releases only. Also, if your future release tag name is the same as your future release version number, then you can skip `--future-release-tag`.
 
 Example:
 
 ```sh
-$ github-changelog-generator --owner=uphold --repo=github-changelog-generator --future-release=1.2.3 > CHANGELOG.md
+$ github-changelog-generator --owner=uphold --repo=github-changelog-generator --future-release=1.2.3 --future-release-tag=v1.2.3 > CHANGELOG.md
 ```
 
 
