@@ -16,7 +16,8 @@ const program = require('commander');
 program
   .option('-o, --owner <name>', '[required] owner of the repository')
   .option('-r, --repo <name>', '[required] name of the repository')
-  .option('-f, --future-release <version>', '[optional] specify the next release tag')
+  .option('-f, --future-release <version>', '[optional] specify the next release version')
+  .option('-t, --future-release-tag <name>', '[optional] specify the next release tag name if it is different from the release version')
   .description('Run Github changelog generator.')
   .parse(process.argv);
 
@@ -26,6 +27,7 @@ program
 
 const concurrency = 20;
 const { futureRelease, owner, repo } = program;
+const futureReleaseTag = program.futureReleaseTag || futureRelease;
 const token = process.env.GITHUB_TOKEN;
 
 if (!owner || !repo) {
@@ -88,7 +90,7 @@ async function getAllReleases() {
   if (futureRelease) {
     releases.unshift({
       created_at: moment().format(),
-      html_url: `https://github.com/${owner}/${repo}/releases/tag/${futureRelease}`,
+      html_url: `https://github.com/${owner}/${repo}/releases/tag/${futureReleaseTag}`,
       name: futureRelease
     });
   }
