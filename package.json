@@ -4,11 +4,11 @@
   "description": "Generate changelog files from the project's Github PRs",
   "main": "dist/index.js",
   "scripts": {
-    "changelog": "OWNER=uphold REPO=github-changelog-generator ./bin/github-changelog-generator.js > CHANGELOG.md",
+    "changelog": "./bin/github-changelog-generator.js --owner=uphold --repo=github-changelog-generator --future-release=$npm_package_version --future-release-tag=v$npm_package_version > CHANGELOG.md",
     "lint": "eslint src",
     "test": "echo \"Error: no test specified\" && exit 1",
     "transpile": "rm -rf dist/* && babel src --copy-files --out-dir dist",
-    "version": "npm run transpile && FUTURE_RELEASE=$npm_package_version npm run changelog && git add -A CHANGELOG.md dist"
+    "version": "npm run transpile && npm run changelog && git add -A CHANGELOG.md dist"
   },
   "author": "Ricardo Lopes",
   "license": "MIT",
