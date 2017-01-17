@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.3.0](https://github.com/uphold/github-changelog-generator/releases/tag/v0.3.0) (2017-01-17)
+- Update changelog script [\#30](https://github.com/uphold/github-changelog-generator/pull/30) ([rplopes](https://github.com/rplopes))
+- Allow specifying release tag names [\#29](https://github.com/uphold/github-changelog-generator/pull/29) ([rplopes](https://github.com/rplopes))
+- Add command line interface arguments [\#28](https://github.com/uphold/github-changelog-generator/pull/28) ([Americas](https://github.com/Americas))
+- Simplify babel usage [\#27](https://github.com/uphold/github-changelog-generator/pull/27) ([rplopes](https://github.com/rplopes))
+
 ## [0.2.0](https://github.com/uphold/github-changelog-generator/releases/tag/v0.2.0) (2016-11-25)
 - Transpile before running changelog [\#22](https://github.com/uphold/github-changelog-generator/pull/22) ([rplopes](https://github.com/rplopes))
 - Fix executable path [\#21](https://github.com/uphold/github-changelog-generator/pull/21) ([kurayama](https://github.com/kurayama))

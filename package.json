@@ -1,6 +1,6 @@
 {
   "name": "github-changelog-generator",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Generate changelog files from the project's Github PRs",
   "main": "dist/index.js",
   "scripts": {
