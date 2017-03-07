@@ -2,7 +2,7 @@
 Generate changelog files from the project's Github PRs
 
 ## Usage
-Generate a new [Github Personal Access Token](https://github.com/settings/tokens) and save it it your `.zshrc.local`, `.bashrc.local` or similar:
+Generate a new [Github Personal Access Token](https://github.com/settings/tokens) and save it to your `.zshrc.local`, `.bashrc.local` or similar:
 
 ```sh
 export GITHUB_TOKEN=<your_github_personal_access_token>
