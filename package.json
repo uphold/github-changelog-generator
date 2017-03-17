@@ -1,5 +1,5 @@
 {
-  "name": "github-changelog-generator",
+  "name": "@uphold/github-changelog-generator",
   "version": "0.3.0",
   "description": "Generate changelog files from the project's Github PRs",
   "main": "dist/index.js",
