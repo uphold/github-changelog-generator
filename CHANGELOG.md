@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.0](https://github.com/uphold/github-changelog-generator/releases/tag/v0.4.0) (2017-03-17)
+- Use @uphold scope [\#37](https://github.com/uphold/github-changelog-generator/pull/37) ([kurayama](https://github.com/kurayama))
+- Whitelist files in .npmignore [\#36](https://github.com/uphold/github-changelog-generator/pull/36) ([kurayama](https://github.com/kurayama))
+- Fix empty release names [\#33](https://github.com/uphold/github-changelog-generator/pull/33) ([rplopes](https://github.com/rplopes))
+- Fix typo in Usage section [\#34](https://github.com/uphold/github-changelog-generator/pull/34) ([hitmanmcc](https://github.com/hitmanmcc))
+
 ## [0.3.0](https://github.com/uphold/github-changelog-generator/releases/tag/v0.3.0) (2017-01-17)
 - Update changelog script [\#30](https://github.com/uphold/github-changelog-generator/pull/30) ([rplopes](https://github.com/rplopes))
 - Allow specifying release tag names [\#29](https://github.com/uphold/github-changelog-generator/pull/29) ([rplopes](https://github.com/rplopes))
