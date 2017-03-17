@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.1](https://github.com/uphold/github-changelog-generator/releases/tag/v0.4.1) (2017-03-17)
+- Fix npm pack ignoring bin folder [\#41](https://github.com/uphold/github-changelog-generator/pull/41) ([kurayama](https://github.com/kurayama))
+- Add repository in package.json [\#40](https://github.com/uphold/github-changelog-generator/pull/40) ([kurayama](https://github.com/kurayama))
+
 ## [0.4.0](https://github.com/uphold/github-changelog-generator/releases/tag/v0.4.0) (2017-03-17)
 - Use @uphold scope [\#37](https://github.com/uphold/github-changelog-generator/pull/37) ([kurayama](https://github.com/kurayama))
 - Whitelist files in .npmignore [\#36](https://github.com/uphold/github-changelog-generator/pull/36) ([kurayama](https://github.com/kurayama))
