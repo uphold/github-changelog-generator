@@ -2,18 +2,19 @@
   "name": "@uphold/github-changelog-generator",
   "version": "0.4.0",
   "description": "Generate changelog files from the project's Github PRs",
+  "license": "MIT",
+  "author": "Ricardo Lopes",
   "main": "dist/index.js",
+  "bin": {
+    "github-changelog-generator": "./bin/github-changelog-generator.js"
+  },
+  "repository": "uphold/github-changelog-generator",
   "scripts": {
     "changelog": "./bin/github-changelog-generator.js --owner=uphold --repo=github-changelog-generator --future-release=$npm_package_version --future-release-tag=v$npm_package_version > CHANGELOG.md",
     "lint": "eslint src",
     "test": "echo \"Error: no test specified\" && exit 1",
     "transpile": "rm -rf dist/* && babel src --copy-files --out-dir dist",
     "version": "npm run transpile && npm run changelog && git add -A CHANGELOG.md dist"
-  },
-  "author": "Ricardo Lopes",
-  "license": "MIT",
-  "bin": {
-    "github-changelog-generator": "./bin/github-changelog-generator.js"
   },
   "dependencies": {
     "bluebird": "^3.4.6",
