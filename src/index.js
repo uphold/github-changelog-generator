@@ -4,6 +4,7 @@
  */
 
 const { assign, chain, concat, has, flatten, find, range } = require('lodash');
+const gh = require('parse-github-url');
 const GitHubApi = require('github');
 const Promise = require('bluebird');
 const moment = require('moment');
@@ -14,10 +15,10 @@ const program = require('commander');
  */
 
 program
-  .option('-o, --owner <name>', '[required] owner of the repository')
-  .option('-r, --repo <name>', '[required] name of the repository')
   .option('-f, --future-release <version>', '[optional] specify the next release version')
   .option('-t, --future-release-tag <name>', '[optional] specify the next release tag name if it is different from the release version')
+  .option('-o, --owner <name>', '[optional] specify owner of the repository. If no value is provided, repository field data in package.json will be used')
+  .option('-r, --repo <name>', '[optional] specify name of the repository. If no value is provided, repository field data in package.json will be used')
   .description('Run Github changelog generator.')
   .parse(process.argv);
 
@@ -26,12 +27,42 @@ program
  */
 
 const concurrency = 20;
-const { futureRelease, owner, repo } = program;
+const futureRelease = program.futureRelease;
 const futureReleaseTag = program.futureReleaseTag || futureRelease;
+let { owner, repo } = program;
 const token = process.env.GITHUB_TOKEN;
 
 if (!owner || !repo) {
-  process.stderr.write(`  Missing required options.\n${program.helpInformation()}`);
+  /**
+   * Try to read missing values from package.json.
+   */
+
+  let pjson;
+
+  try {
+    pjson = require(`${process.cwd()}/package.json`);
+  } catch (e) {
+    process.stderr.write(`  Missing owner/repo values. Add package.json file with a valid repository value or provide --owner and --repo options.`);
+
+    process.exit(1);
+  }
+
+  if (pjson && pjson.repository) {
+    const repoUrl = pjson.repository.url || pjson.repository;
+
+    if (repoUrl) {
+      const packageRepositoryData = gh(repoUrl);
+
+      if (packageRepositoryData) {
+        owner = owner || packageRepositoryData.owner;
+        repo = repo || packageRepositoryData.name;
+      }
+    }
+  }
+}
+
+if (!owner || !repo) {
+  process.stderr.write(`  Missing owner/repo values. Check if package.json contains a valid repository value or provide --owner and --repo options.`);
 
   process.exit(1);
 }

@@ -20,18 +20,20 @@ $ github-changelog-generator --help
   Options:
 
     -h, --help                       output usage information
-    -o, --owner <name>               [required] owner of the repository
-    -r, --repo <name>                [required] name of the repository
     -f, --future-release <version>   [optional] specify the next release version
     -t, --future-release-tag <name>  [optional] specify the next release tag name if it is different from the release version
+    -o, --owner <name>               [optional] specify owner of the repository. If no value is provided, repository field data in package.json will be used
+    -r, --repo <name>                [optional] specify name of the repository. If no value is provided, repository field data in package.json will be used
 ```
 
 To generate a changelog for your Github project, use the following command:
 
 ```sh
-$ github-changelog-generator --owner=<repo_owner> --repo=<repo_name> --future-release=<release_name> --future-release-tag=<release_tag_name>  > <your_changelog_file>
+$ github-changelog-generator --future-release=<release_name> --future-release-tag=<release_tag_name> --owner=<repo_owner> --repo=<repo_name> > <your_changelog_file>
 ```
 
+If no `--owner` or `--repo` options are provided, `package.json` will be used to parse the missing information.
+ 
 The `--future-release` and `--future-release-tag` options are optional. If you just want to build a new changelog without a new release, you can skip those options, and `github-changelog-generator` will create a changelog for existing releases only. Also, if your future release tag name is the same as your future release version number, then you can skip `--future-release-tag`.
 
 Example:
