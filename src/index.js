@@ -16,6 +16,7 @@ const program = require('commander');
 program
   .option('-o, --owner <name>', '[required] owner of the repository')
   .option('-r, --repo <name>', '[required] name of the repository')
+  .option('-b, --base-branch <name>', '[optional] specify the base branch name - master by default')
   .option('-f, --future-release <version>', '[optional] specify the next release version')
   .option('-t, --future-release-tag <name>', '[optional] specify the next release tag name if it is different from the release version')
   .description('Run Github changelog generator.')
@@ -25,6 +26,7 @@ program
  * Options.
  */
 
+const base = program.baseBranch || 'master';
 const concurrency = 20;
 const { futureRelease, owner, repo } = program;
 const futureReleaseTag = program.futureReleaseTag || futureRelease;
@@ -106,7 +108,7 @@ async function getAllReleases() {
  */
 
 async function getPullRequestsPage(page = 1) {
-  return await github.pullRequests.getAll({ owner, page, per_page: 100, repo, state: 'closed' });
+  return await github.pullRequests.getAll({ base, owner, page, per_page: 100, repo, state: 'closed' });
 }
 
 /**
