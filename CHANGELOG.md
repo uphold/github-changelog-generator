@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.5.0](https://github.com/uphold/github-changelog-generator/releases/tag/v0.5.0) (2018-03-02)
+- Generation of CHANGELOG filtering merges by base branch [\#43](https://github.com/uphold/github-changelog-generator/pull/43) ([marianacapelo](https://github.com/marianacapelo))
+
 ## [0.4.1](https://github.com/uphold/github-changelog-generator/releases/tag/v0.4.1) (2017-03-17)
 - Fix npm pack ignoring bin folder [\#41](https://github.com/uphold/github-changelog-generator/pull/41) ([kurayama](https://github.com/kurayama))
 - Add repository in package.json [\#40](https://github.com/uphold/github-changelog-generator/pull/40) ([kurayama](https://github.com/kurayama))

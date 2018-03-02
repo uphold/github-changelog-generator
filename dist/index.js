@@ -72,7 +72,7 @@ let getAllReleases = (() => {
 
 let getPullRequestsPage = (() => {
   var _ref4 = (0, _bluebird.coroutine)(function* (page = 1) {
-    return yield github.pullRequests.getAll({ owner, page, per_page: 100, repo, state: 'closed' });
+    return yield github.pullRequests.getAll({ base, owner, page, per_page: 100, repo, state: 'closed' });
   });
 
   return function getPullRequestsPage() {
@@ -142,12 +142,13 @@ const program = require('commander');
  * Command-line program definition.
  */
 
-program.option('-o, --owner <name>', '[required] owner of the repository').option('-r, --repo <name>', '[required] name of the repository').option('-f, --future-release <version>', '[optional] specify the next release version').option('-t, --future-release-tag <name>', '[optional] specify the next release tag name if it is different from the release version').description('Run Github changelog generator.').parse(process.argv);
+program.option('-o, --owner <name>', '[required] owner of the repository').option('-r, --repo <name>', '[required] name of the repository').option('-b, --base-branch <name>', '[optional] specify the base branch name - master by default').option('-f, --future-release <version>', '[optional] specify the next release version').option('-t, --future-release-tag <name>', '[optional] specify the next release tag name if it is different from the release version').description('Run Github changelog generator.').parse(process.argv);
 
 /**
  * Options.
  */
 
+const base = program.baseBranch || 'master';
 const concurrency = 20;
 const { futureRelease, owner, repo } = program;
 const futureReleaseTag = program.futureReleaseTag || futureRelease;
