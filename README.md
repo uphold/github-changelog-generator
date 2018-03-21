@@ -1,8 +1,8 @@
 # github-changelog-generator
-Generate changelog files from the project's Github PRs
+Generate changelog files from the project's GitHub PRs
 
 ## Usage
-Generate a new [Github Personal Access Token](https://github.com/settings/tokens) and save it to your `.zshrc.local`, `.bashrc.local` or similar:
+Generate a new [GitHub Personal Access Token](https://github.com/settings/tokens) and save it to your `.zshrc.local`, `.bashrc.local` or similar:
 
 ```sh
 export GITHUB_TOKEN=<your_github_personal_access_token>
@@ -15,7 +15,7 @@ $ github-changelog-generator --help
 
   Usage: github-changelog-generator [options]
 
-  Run Github changelog generator.
+  Run GitHub changelog generator.
 
   Options:
 
@@ -27,7 +27,7 @@ $ github-changelog-generator --help
     -t, --future-release-tag <name>  [optional] specify the next release tag name if it is different from the release version
 ```
 
-To generate a changelog for your Github project, use the following command:
+To generate a changelog for your GitHub project, use the following command:
 
 ```sh
 $ github-changelog-generator --owner=<repo_owner> --repo=<repo_name> --base-branch=<base> --future-release=<release_name> --future-release-tag=<release_tag_name> > <your_changelog_file>

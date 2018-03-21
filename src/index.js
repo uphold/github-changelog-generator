@@ -19,7 +19,7 @@ program
   .option('-b, --base-branch <name>', '[optional] specify the base branch name - master by default')
   .option('-f, --future-release <version>', '[optional] specify the next release version')
   .option('-t, --future-release-tag <name>', '[optional] specify the next release tag name if it is different from the release version')
-  .description('Run Github changelog generator.')
+  .description('Run GitHub changelog generator.')
   .parse(process.argv);
 
 /**
@@ -39,7 +39,7 @@ if (!owner || !repo) {
 }
 
 /**
- * Set up Github API connection.
+ * Set up GitHub API connection.
  */
 
 const github = new GitHubApi({ Promise });
