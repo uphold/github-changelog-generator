@@ -4,9 +4,9 @@
  */
 
 const { assign, chain, concat, has, flatten, find, range } = require('lodash');
-const GitHubApi = require('github');
 const Promise = require('bluebird');
 const moment = require('moment');
+const octokit = require('@octokit/rest')();
 const program = require('commander');
 
 /**
@@ -42,9 +42,7 @@ if (!owner || !repo) {
  * Set up GitHub API connection.
  */
 
-const github = new GitHubApi({ Promise });
-
-github.authenticate({ token, type: 'token' });
+octokit.authenticate({ token, type: 'token' });
 
 /**
  * Assign a PR to a release.
@@ -79,7 +77,7 @@ async function getResultsFromNextPages(results, fn) {
  */
 
 async function getReleasesPage(page = 1) {
-  return await github.repos.getReleases({ owner, page, per_page: 100, repo });
+  return await octokit.repos.getReleases({ owner, page, per_page: 100, repo });
 }
 
 /**
@@ -87,7 +85,7 @@ async function getReleasesPage(page = 1) {
  */
 
 async function getAllReleases() {
-  const releases = await getReleasesPage();
+  const { data: releases } = await getReleasesPage();
 
   if (futureRelease) {
     releases.unshift({
@@ -108,7 +106,7 @@ async function getAllReleases() {
  */
 
 async function getPullRequestsPage(page = 1) {
-  return await github.pullRequests.getAll({ base, owner, page, per_page: 100, repo, state: 'closed' });
+  return await octokit.pullRequests.getAll({ base, owner, page, per_page: 100, repo, state: 'closed' });
 }
 
 /**
@@ -116,7 +114,7 @@ async function getPullRequestsPage(page = 1) {
  */
 
 async function getAllPullRequests() {
-  const prs = await getPullRequestsPage();
+  const { data: prs } = await getPullRequestsPage();
 
   return chain(await getResultsFromNextPages(prs, getPullRequestsPage))
     .map(pr => assign(pr, { merged_at: moment.utc(pr.merged_at) }))
