@@ -3,9 +3,10 @@
  * Module dependencies.
  */
 
-const { assign, chain, concat, has, flatten, find, range } = require('lodash');
+const { assign, chain, concat, has, flatten, find, findIndex, range } = require('lodash');
 const GitHubApi = require('github');
 const Promise = require('bluebird');
+const fs = require('fs');
 const moment = require('moment');
 const program = require('commander');
 
@@ -18,6 +19,7 @@ program
   .option('-r, --repo <name>', '[required] name of the repository')
   .option('-b, --base-branch <name>', '[optional] specify the base branch name - master by default')
   .option('-f, --future-release <version>', '[optional] specify the next release version')
+  .option('-p, --prefill-from <filename>', '[optional] specify the existing changelog file to prefill changelog data from')
   .option('-t, --future-release-tag <name>', '[optional] specify the next release tag name if it is different from the release version')
   .description('Run GitHub changelog generator.')
   .parse(process.argv);
@@ -28,9 +30,14 @@ program
 
 const base = program.baseBranch || 'master';
 const concurrency = 20;
+const existingChangelog = program.prefillFrom && fs.readFileSync(program.prefillFrom).toString().split('\n');
 const { futureRelease, owner, repo } = program;
 const futureReleaseTag = program.futureReleaseTag || futureRelease;
+const latestPr = existingChangelog && existingChangelog[3];
+const latestRelease = existingChangelog && existingChangelog[2];
 const token = process.env.GITHUB_TOKEN;
+let latestPrPage;
+let latestReleasePage;
 
 if (!owner || !repo) {
   process.stderr.write(`  Missing required options.\n${program.helpInformation()}`);
@@ -79,7 +86,20 @@ async function getResultsFromNextPages(results, fn) {
  */
 
 async function getReleasesPage(page = 1) {
-  return await github.repos.getReleases({ owner, page, per_page: 100, repo });
+  if (latestReleasePage < page) {
+    return [];
+  }
+
+  const releases = await github.repos.getReleases({ owner, page, per_page: 100, repo });
+  const limit = findIndex(releases, release => latestRelease && release.name === latestRelease.match(/## \[([^]+)]/)[1]);
+
+  if (limit !== -1) {
+    latestReleasePage = page;
+
+    return releases.slice(0, limit);
+  }
+
+  return releases;
 }
 
 /**
@@ -108,7 +128,19 @@ async function getAllReleases() {
  */
 
 async function getPullRequestsPage(page = 1) {
-  return await github.pullRequests.getAll({ base, owner, page, per_page: 100, repo, state: 'closed' });
+  if (latestPrPage < page) {
+    return [];
+  }
+
+  const prs = await github.pullRequests.getAll({ base, owner, page, per_page: 100, repo, state: 'closed' });
+
+  if (latestRelease && find(prs, pr => moment(pr.created_at).isBefore(latestRelease.match(/ \((.+)\)$/)[1]))) {
+    latestPrPage = page;
+
+    return prs.filter(pr => moment(pr.merged_at).isSameOrAfter(latestRelease.match(/ \((.+)\)$/)[1]));
+  }
+
+  return prs;
 }
 
 /**
@@ -116,12 +148,18 @@ async function getPullRequestsPage(page = 1) {
  */
 
 async function getAllPullRequests() {
-  const prs = await getPullRequestsPage();
-
-  return chain(await getResultsFromNextPages(prs, getPullRequestsPage))
+  const prs = chain(await getResultsFromNextPages(await getPullRequestsPage(), getPullRequestsPage))
     .map(pr => assign(pr, { merged_at: moment.utc(pr.merged_at) }))
     .sortBy(pr => pr.merged_at.unix())
     .value();
+
+  const limit = findIndex(prs, pr => latestPr && pr.html_url === latestPr.match(/\((http[^)]+)\)/)[1]);
+
+  if (limit !== -1) {
+    return prs.slice(limit + 1);
+  }
+
+  return prs;
 }
 
 /**
@@ -137,6 +175,10 @@ function writeChangelog(releases) {
     for (const pr of release.prs) {
       changelog.push(`- ${pr.title} [\\#${pr.number}](${pr.html_url}) ([${pr.user.login}](${pr.user.html_url}))\n`);
     }
+  }
+
+  if (existingChangelog) {
+    existingChangelog.slice(1).forEach(line => changelog.push(`${line}\n`));
   }
 
   changelog.forEach(line => process.stdout.write(line));
