@@ -66,7 +66,7 @@ async function getResultsFromNextPages(results, fn) {
   let lastPage = 1;
 
   if (has(results, 'meta.link')) {
-    lastPage = results.meta.link.match(/<[^>]+[&?]page=([0-9]+)[^>]+>; rel="last"/)[1];
+    lastPage = Number(results.meta.link.match(/<[^>]+[&?]page=([0-9]+)[^>]+>; rel="last"/)[1]);
   }
 
   const pages = range(2, lastPage + 1);
