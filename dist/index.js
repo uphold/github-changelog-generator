@@ -11,7 +11,7 @@ let getResultsFromNextPages = (() => {
     let lastPage = 1;
 
     if (has(results, 'meta.link')) {
-      lastPage = results.meta.link.match(/<[^>]+[&?]page=([0-9]+)[^>]+>; rel="last"/)[1];
+      lastPage = Number(results.meta.link.match(/<[^>]+[&?]page=([0-9]+)[^>]+>; rel="last"/)[1]);
     }
 
     const pages = range(2, lastPage + 1);
@@ -142,7 +142,7 @@ const program = require('commander');
  * Command-line program definition.
  */
 
-program.option('-o, --owner <name>', '[required] owner of the repository').option('-r, --repo <name>', '[required] name of the repository').option('-b, --base-branch <name>', '[optional] specify the base branch name - master by default').option('-f, --future-release <version>', '[optional] specify the next release version').option('-t, --future-release-tag <name>', '[optional] specify the next release tag name if it is different from the release version').description('Run Github changelog generator.').parse(process.argv);
+program.option('-o, --owner <name>', '[required] owner of the repository').option('-r, --repo <name>', '[required] name of the repository').option('-b, --base-branch <name>', '[optional] specify the base branch name - master by default').option('-f, --future-release <version>', '[optional] specify the next release version').option('-t, --future-release-tag <name>', '[optional] specify the next release tag name if it is different from the release version').description('Run GitHub changelog generator.').parse(process.argv);
 
 /**
  * Options.
@@ -161,7 +161,7 @@ if (!owner || !repo) {
 }
 
 /**
- * Set up Github API connection.
+ * Set up GitHub API connection.
  */
 
 const github = new GitHubApi({ Promise });

@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.6.0](https://github.com/uphold/github-changelog-generator/releases/tag/v0.6.0) (2018-04-06)
+- Fix excessive API calls [\#49](https://github.com/uphold/github-changelog-generator/pull/49) ([rplopes](https://github.com/rplopes))
+- Fix GitHub name [\#46](https://github.com/uphold/github-changelog-generator/pull/46) ([rplopes](https://github.com/rplopes))
+
 ## [0.5.0](https://github.com/uphold/github-changelog-generator/releases/tag/v0.5.0) (2018-03-02)
 - Generation of CHANGELOG filtering merges by base branch [\#43](https://github.com/uphold/github-changelog-generator/pull/43) ([marianacapelo](https://github.com/marianacapelo))
 
