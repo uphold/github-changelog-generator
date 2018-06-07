@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.7.0](https://github.com/uphold/github-changelog-generator/releases/tag/v0.7.0) (2018-06-07)
+- Infer owner and repo from git config [\#50](https://github.com/uphold/github-changelog-generator/pull/50) ([rplopes](https://github.com/rplopes))
+
 ## [0.6.0](https://github.com/uphold/github-changelog-generator/releases/tag/v0.6.0) (2018-04-06)
 - Fix excessive API calls [\#49](https://github.com/uphold/github-changelog-generator/pull/49) ([rplopes](https://github.com/rplopes))
 - Fix GitHub name [\#46](https://github.com/uphold/github-changelog-generator/pull/46) ([rplopes](https://github.com/rplopes))
