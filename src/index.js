@@ -4,9 +4,12 @@
  */
 
 const { assign, chain, concat, has, flatten, find, range } = require('lodash');
+const { readFileSync } = require('fs');
 const GitHubApi = require('github');
 const Promise = require('bluebird');
+const ini = require('ini');
 const moment = require('moment');
+const path = require('path');
 const program = require('commander');
 
 /**
@@ -14,11 +17,11 @@ const program = require('commander');
  */
 
 program
-  .option('-o, --owner <name>', '[required] owner of the repository')
-  .option('-r, --repo <name>', '[required] name of the repository')
   .option('-b, --base-branch <name>', '[optional] specify the base branch name - master by default')
   .option('-f, --future-release <version>', '[optional] specify the next release version')
   .option('-t, --future-release-tag <name>', '[optional] specify the next release tag name if it is different from the release version')
+  .option('-o, --owner <name>', '[optional] owner of the repository')
+  .option('-r, --repo <name>', '[optional] name of the repository')
   .description('Run GitHub changelog generator.')
   .parse(process.argv);
 
@@ -28,14 +31,33 @@ program
 
 const base = program.baseBranch || 'master';
 const concurrency = 20;
-const { futureRelease, owner, repo } = program;
+const { futureRelease } = program;
 const futureReleaseTag = program.futureReleaseTag || futureRelease;
 const token = process.env.GITHUB_TOKEN;
+let { owner, repo } = program;
+
+/**
+ * Infer owner and repo from git config if not provided.
+ */
 
 if (!owner || !repo) {
-  process.stderr.write(`  Missing required options.\n${program.helpInformation()}`);
+  const dir = path.resolve('.');
 
-  process.exit(1);
+  try {
+    const gitconfig = readFileSync(path.join(dir, '.git/config'), 'utf-8');
+    const remoteOrigin = ini.parse(gitconfig)['remote "origin"'];
+    const match = remoteOrigin.url.match(/.+\:([^/]+)\/(.+)\.git/);
+
+    owner = owner || match[1];
+    repo = repo || match[2];
+  } catch (e) {
+    process.stderr.write(`
+      Failed to infer repository owner and name.
+      Please use options --owner and --repo to manually set them.
+    `);
+
+    process.exit(1);
+  }
 }
 
 /**
