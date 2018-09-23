@@ -5,10 +5,10 @@
 
 const { assign, chain, concat, has, flatten, find, range } = require('lodash');
 const { readFileSync } = require('fs');
-const GitHubApi = require('github');
 const Promise = require('bluebird');
 const ini = require('ini');
 const moment = require('moment');
+const octokit = require('@octokit/rest')();
 const path = require('path');
 const program = require('commander');
 
@@ -64,9 +64,7 @@ if (!owner || !repo) {
  * Set up GitHub API connection.
  */
 
-const github = new GitHubApi({ Promise });
-
-github.authenticate({ token, type: 'token' });
+octokit.authenticate({ token, type: 'token' });
 
 /**
  * Assign a PR to a release.
@@ -84,16 +82,16 @@ function assignPrToRelease(releases, pr) {
  * Get results from the next pages.
  */
 
-async function getResultsFromNextPages(results, fn) {
+async function getResultsFromNextPages(response, fn) {
   let lastPage = 1;
 
-  if (has(results, 'meta.link')) {
-    lastPage = Number(results.meta.link.match(/<[^>]+[&?]page=([0-9]+)[^>]+>; rel="last"/)[1]);
+  if (has(response, 'headers.link')) {
+    lastPage = Number(response.headers.link.match(/<[^>]+[&?]page=([0-9]+)[^>]+>; rel="last"/)[1]);
   }
 
   const pages = range(2, lastPage + 1);
 
-  return concat(results, flatten(await Promise.map(pages, fn, { concurrency })));
+  return concat(response.data, flatten(await Promise.map(pages, fn, { concurrency })));
 }
 
 /**
@@ -101,7 +99,7 @@ async function getResultsFromNextPages(results, fn) {
  */
 
 async function getReleasesPage(page = 1) {
-  return await github.repos.getReleases({ owner, page, per_page: 100, repo });
+  return await octokit.repos.getReleases({ owner, page, per_page: 100, repo });
 }
 
 /**
@@ -109,17 +107,17 @@ async function getReleasesPage(page = 1) {
  */
 
 async function getAllReleases() {
-  const releases = await getReleasesPage();
+  const response = await getReleasesPage();
 
   if (futureRelease) {
-    releases.unshift({
+    response.data.unshift({
       created_at: moment().format(),
       html_url: `https://github.com/${owner}/${repo}/releases/tag/${futureReleaseTag}`,
       name: futureRelease
     });
   }
 
-  return chain(await getResultsFromNextPages(releases, getReleasesPage))
+  return chain(await getResultsFromNextPages(response, getReleasesPage))
     .map(release => assign(release, { created_at: moment.utc(release.created_at), prs: [] }))
     .sortBy(release => release.created_at.unix())
     .value();
@@ -130,7 +128,7 @@ async function getAllReleases() {
  */
 
 async function getPullRequestsPage(page = 1) {
-  return await github.pullRequests.getAll({ base, owner, page, per_page: 100, repo, state: 'closed' });
+  return await octokit.pullRequests.getAll({ base, owner, page, per_page: 100, repo, state: 'closed' });
 }
 
 /**
@@ -138,9 +136,9 @@ async function getPullRequestsPage(page = 1) {
  */
 
 async function getAllPullRequests() {
-  const prs = await getPullRequestsPage();
+  const response = await getPullRequestsPage();
 
-  return chain(await getResultsFromNextPages(prs, getPullRequestsPage))
+  return chain(await getResultsFromNextPages(response, getPullRequestsPage))
     .map(pr => assign(pr, { merged_at: moment.utc(pr.merged_at) }))
     .sortBy(pr => pr.merged_at.unix())
     .value();
