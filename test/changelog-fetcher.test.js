@@ -28,12 +28,13 @@ describe('ChangelogFetcher', () => {
       expect(fetcher.futureReleaseTag).toEqual('baz');
       expect(fetcher.owner).toEqual('biz');
       expect(fetcher.repo).toEqual('buz');
-      expect(fetcher.token).toEqual('qux');
+      expect(fetcher.client.auth.token).toEqual('qux');
     });
 
     it('should set default values', () => {
       const fetcher = new ChangelogFetcher({
-        futureRelease: 'foo'
+        futureRelease: 'foo',
+        token: 'bar'
       });
 
       expect(fetcher.futureReleaseTag).toEqual('foo');
@@ -213,7 +214,7 @@ describe('ChangelogFetcher', () => {
           html_url: 'foo-url',
           tag_name: 'foo-tag'
         }], {
-          'Link': '<foo&page=2&per_page=100>; rel="last"'
+          Link: '<foo&page=2&per_page=100>; rel="last"'
         });
 
       nock('https://api.github.com')
@@ -224,7 +225,7 @@ describe('ChangelogFetcher', () => {
           html_url: 'bar-url',
           tag_name: 'bar-tag'
         }], {
-          'Link': '<foo&page=2&per_page=100>; rel="last"'
+          Link: '<foo&page=2&per_page=100>; rel="last"'
         });
 
       nock('https://api.github.com')
@@ -249,7 +250,7 @@ describe('ChangelogFetcher', () => {
           title: 'barbiz-title',
           user: { html_url: 'barbiz-user-url', login: 'barbiz-user-login' }
         }], {
-          'Link': '<foo&page=2&per_page=100>; rel="last"'
+          Link: '<foo&page=2&per_page=100>; rel="last"'
         });
 
       nock('https://api.github.com')
@@ -262,7 +263,7 @@ describe('ChangelogFetcher', () => {
           title: 'barbuz-title',
           user: { html_url: 'barbuz-user-url', login: 'barbuz-user-login' }
         }], {
-          'Link': '<foo&page=2&per_page=100>; rel="last"'
+          Link: '<foo&page=2&per_page=100>; rel="last"'
         });
 
       const releases = await fetcher.fetchChangelog();
