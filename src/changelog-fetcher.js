@@ -4,7 +4,7 @@
  */
 
 const { assign, chain, has, flatten, find, range } = require('lodash');
-const { getReleases, getPullRequests } = require('./github-client');
+const GitHubApi = require('github');
 const Promise = require('bluebird');
 const moment = require('moment');
 
@@ -29,7 +29,9 @@ class ChangelogFetcher {
     this.futureReleaseTag = futureReleaseTag || futureRelease;
     this.owner = owner;
     this.repo = repo;
-    this.token = token;
+    this.client = new GitHubApi({ Promise });
+
+    this.client.authenticate({ token, type: 'token' });
   }
 
   /**
@@ -64,12 +66,13 @@ class ChangelogFetcher {
     const options = {
       base: this.base,
       owner: this.owner,
+      page: 1,
+      per_page: 100,
       repo: this.repo,
-      state: 'closed',
-      token: this.token
+      state: 'closed'
     };
-    const prs = await getPullRequests(options);
-    const nextPages = await Promise.map(this.getNextPages(prs).map(page => ({ page, ...options })), getPullRequests, { concurrency });
+    const prs = await this.client.pullRequests.getAll(options);
+    const nextPages = await Promise.map(this.getNextPages(prs), page => this.client.pullRequests.getAll({ ...options, page }), { concurrency });
 
     return chain(prs)
       .concat(flatten(nextPages))
@@ -85,10 +88,12 @@ class ChangelogFetcher {
   async getAllReleases() {
     const options = {
       owner: this.owner,
-      repo: this.repo,
-      token: this.token
+      page: 1,
+      per_page: 100,
+      repo: this.repo
     };
-    const releases = await getReleases(options);
+
+    const releases = await this.client.repos.getReleases(options);
 
     if (this.futureRelease) {
       releases.unshift({
@@ -98,7 +103,7 @@ class ChangelogFetcher {
       });
     }
 
-    const nextPages = await Promise.map(this.getNextPages(releases).map(page => ({ page, ...options })), getReleases, { concurrency });
+    const nextPages = await Promise.map(this.getNextPages(releases), page => this.client.repos.getReleases({ ...options, page }), { concurrency });
 
     return chain(releases)
       .concat(flatten(nextPages))
