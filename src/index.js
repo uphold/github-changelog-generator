@@ -13,6 +13,12 @@ const path = require('path');
 const program = require('commander');
 
 /**
+ * Constants.
+ */
+
+const UNRELEASED = 'Unreleased';
+
+/**
  * Command-line program definition.
  */
 
@@ -22,6 +28,7 @@ program
   .option('-t, --future-release-tag <name>', '[optional] specify the next release tag name if it is different from the release version')
   .option('-o, --owner <name>', '[optional] owner of the repository')
   .option('-r, --repo <name>', '[optional] name of the repository')
+  .option('-u, --unreleased', '[optional] show unreleased pull requests')
   .description('Run GitHub changelog generator.')
   .parse(process.argv);
 
@@ -31,7 +38,7 @@ program
 
 const base = program.baseBranch || 'master';
 const concurrency = 20;
-const { futureRelease } = program;
+const { futureRelease, unreleased } = program;
 const futureReleaseTag = program.futureReleaseTag || futureRelease;
 const token = process.env.GITHUB_TOKEN;
 let { owner, repo } = program;
@@ -117,6 +124,11 @@ async function getAllReleases() {
       html_url: `https://github.com/${owner}/${repo}/releases/tag/${futureReleaseTag}`,
       name: futureRelease
     });
+  } else if (unreleased) {
+    releases.unshift({
+      created_at: moment().format(),
+      name: UNRELEASED
+    });
   }
 
   return chain(await getResultsFromNextPages(releases, getReleasesPage))
@@ -154,7 +166,13 @@ function writeChangelog(releases) {
   const changelog = ['# Changelog\n'];
 
   for (const release of releases) {
-    changelog.push(`\n## [${release.name || release.tag_name}](${release.html_url}) (${release.created_at.format('YYYY-MM-DD')})\n`);
+    if (release.name === UNRELEASED) {
+      if (release.prs.length > 0) {
+        changelog.push(`\n## ${UNRELEASED}\n`);
+      }
+    } else {
+      changelog.push(`\n## [${release.name || release.tag_name}](${release.html_url}) (${release.created_at.format('YYYY-MM-DD')})\n`);
+    }
 
     for (const pr of release.prs) {
       changelog.push(`- ${pr.title} [\\#${pr.number}](${pr.html_url}) ([${pr.user.login}](${pr.user.html_url}))\n`);

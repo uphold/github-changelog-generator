@@ -25,6 +25,7 @@ $ github-changelog-generator --help
     -t, --future-release-tag <name>  [optional] specify the next release tag name if it is different from the release version
     -o, --owner <name>               [optional] owner of the repository
     -r, --repo <name>                [optional] name of the repository
+    -u, --unreleased                 [optional] show unreleased pull requests
 ```
 
 To generate a changelog for your GitHub project, use the following command:
@@ -55,6 +56,14 @@ Example:
 
 ```sh
 $ github-changelog-generator --owner=uphold --repo=github-changelog-generator > CHANGELOG.md
+```
+
+The `--unreleased` option outputs all merged pull requests after the last release under an "Unreleased" header.
+
+Example:
+
+```sh
+$ github-changelog-generator --unreleased > CHANGELOG.md
 ```
 
 ## Release
