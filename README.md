@@ -23,6 +23,7 @@ $ github-changelog-generator --help
     -b, --base-branch <name>         [optional] specify the base branch name - master by default
     -f, --future-release <version>   [optional] specify the next release version
     -t, --future-release-tag <name>  [optional] specify the next release tag name if it is different from the release version
+    -l, --labels <names>             [optional] labels to filter pull requests by
     -o, --owner <name>               [optional] owner of the repository
     -r, --repo <name>                [optional] name of the repository
 ```
@@ -55,6 +56,14 @@ Example:
 
 ```sh
 $ github-changelog-generator --owner=uphold --repo=github-changelog-generator > CHANGELOG.md
+```
+
+The `--labels` option allows you to filter what pull requests are used by their labels. This is useful for repositories with more than one project, by labeling each pull request by what project they belong to, generating a changelog for each project becomes as simple as:
+
+Example:
+
+```sh
+$ github-changelog-generator --labels projectX,general > CHANGELOG.md
 ```
 
 ## Release
