@@ -59,5 +59,5 @@ $ github-changelog-generator --owner=uphold --repo=github-changelog-generator > 
 
 ## Release
 ```sh
-npm version [<newversion> | major | minor | patch] -m "Release %s"
+yarn release [<newversion> | major | minor | patch]
 ```

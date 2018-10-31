@@ -1,7 +1,10 @@
-extends: seegno
+extends: uphold
 
 rules:
-  id-match: 0
+  id-match:
+    - error
+    - '^_$|^[\$_a-zA-Z]*[_a-zA-Z0-9]*[a-zA-Z0-9]*$|^[A-Z][_A-Z0-9]+[A-Z0-9]$'
+    - onlyDeclarations: true
+      properties: true
   no-process-env: 0
   no-process-exit: 0
-  no-return-assign: 0
