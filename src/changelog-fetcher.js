@@ -3,7 +3,7 @@
  * Module dependencies.
  */
 
-const { assign, chain, flatMap, find, range } = require('lodash');
+const { assign, chain, flatMap, find, isEmpty, range } = require('lodash');
 const Promise = require('bluebird');
 const moment = require('moment');
 const octokit = require('@octokit/rest');
@@ -23,10 +23,11 @@ class ChangelogFetcher {
    * Constructor.
    */
 
-  constructor({ base, futureRelease, futureReleaseTag, owner, repo, token }) {
+  constructor({ base, futureRelease, futureReleaseTag, labels, owner, repo, token }) {
     this.base = base;
     this.futureRelease = futureRelease;
     this.futureReleaseTag = futureReleaseTag || futureRelease;
+    this.labels = labels;
     this.owner = owner;
     this.repo = repo;
     this.client = octokit();
@@ -76,6 +77,7 @@ class ChangelogFetcher {
 
     return chain(prs.data)
       .concat(flatMap(nextPages, 'data'))
+      .filter(({ labels }) => isEmpty(this.labels) || !chain(labels).map('name').intersection(this.labels).isEmpty().value())
       .map(pr => assign(pr, { merged_at: moment.utc(pr.merged_at) }))
       .sortBy(pr => pr.merged_at.unix())
       .value();
