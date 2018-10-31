@@ -10,7 +10,7 @@
   },
   "repository": "uphold/github-changelog-generator",
   "scripts": {
-    "changelog": "./bin/github-changelog-generator.js --owner=uphold --repo=github-changelog-generator --future-release=$npm_package_version --future-release-tag=v$npm_package_version > CHANGELOG.md",
+    "changelog": "./bin/github-changelog-generator.js -f $npm_package_version -t v$npm_package_version > CHANGELOG.md",
     "lint": "eslint src",
     "test": "jest",
     "transpile": "rm -rf dist/* && babel src --copy-files --out-dir dist",
