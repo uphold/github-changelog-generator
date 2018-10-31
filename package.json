@@ -11,7 +11,8 @@
   "repository": "uphold/github-changelog-generator",
   "scripts": {
     "changelog": "./bin/github-changelog-generator.js -f $npm_package_version -t v$npm_package_version > CHANGELOG.md",
-    "lint": "eslint src",
+    "lint": "eslint --cache .",
+    "release": "npm version -m 'Release %s'",
     "test": "jest",
     "transpile": "rm -rf dist/* && babel src --copy-files --out-dir dist",
     "version": "npm run transpile && npm run changelog && git add -A CHANGELOG.md dist"
@@ -25,14 +26,16 @@
     "moment": "^2.17.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.18.0",
+    "babel-cli": "^6.26.0",
+    "babel-eslint": "^10.0.1",
     "babel-plugin-transform-async-to-module-method": "^6.16.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-node6": "^11.0.0",
-    "eslint": "^3.10.2",
-    "eslint-config-seegno": "^8.0.1",
+    "eslint": "^5.8.0",
+    "eslint-config-uphold": "^0.2.0",
     "jest": "^23.6.0",
-    "nock": "^10.0.1"
+    "nock": "^10.0.1",
+    "pre-commit": "^1.2.2"
   },
   "engines": {
     "node": ">=6"
@@ -49,5 +52,11 @@
     "restoreMocks": true,
     "setupTestFrameworkScriptFile": "./test/setup.js",
     "testEnvironment": "node"
+  },
+  "pre-commit": {
+    "run": [
+      "lint"
+    ],
+    "silent": true
   }
 }

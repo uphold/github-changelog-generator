@@ -15,8 +15,8 @@ describe('ChangelogFormatter', () => {
     it('should return an array of lines for releases and pull requests in the expected format', () => {
       const releases = [{
         created_at: moment('2018-10-23'),
-        name: 'foo-name',
         html_url: 'foo-url',
+        name: 'foo-name',
         prs: [{
           html_url: 'foobar-url',
           number: 'foobar-number',
@@ -53,7 +53,7 @@ describe('ChangelogFormatter', () => {
         '- foobiz-title [\\#foobiz-number](foobiz-url) ([foobiz-user-login](foobiz-user-url))\n',
         '\n## [bar-tag](bar-url) (2018-10-22)\n',
         '- barbiz-title [\\#barbiz-number](barbiz-url) ([barbiz-user-login](barbiz-user-url))\n',
-        '- barbuz-title [\\#barbuz-number](barbuz-url) ([barbuz-user-login](barbuz-user-url))\n',
+        '- barbuz-title [\\#barbuz-number](barbuz-url) ([barbuz-user-login](barbuz-user-url))\n'
       ]);
     });
   });

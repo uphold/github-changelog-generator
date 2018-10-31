@@ -54,8 +54,8 @@ describe('ChangelogFetcher', () => {
         .query({ page: 1, per_page: 100 })
         .reply(200, [{
           created_at: moment('2018-10-23T12'),
-          name: 'foo-name',
           html_url: 'foo-url',
+          name: 'foo-name',
           tag_name: 'foo-tag'
         }, {
           created_at: moment('2018-10-22T12'),
@@ -102,8 +102,8 @@ describe('ChangelogFetcher', () => {
 
       expect(releases).toEqual([{
         created_at: expect.any(moment),
-        name: 'foo-name',
         html_url: 'foo-url',
+        name: 'foo-name',
         prs: [{
           html_url: 'foobar-url',
           merged_at: expect.any(moment),
@@ -152,8 +152,8 @@ describe('ChangelogFetcher', () => {
         .query({ page: 1, per_page: 100 })
         .reply(200, [{
           created_at: moment('2018-10-23T12'),
-          name: 'foo-name',
           html_url: 'foo-url',
+          name: 'foo-name',
           tag_name: 'foo-tag'
         }]);
 
@@ -178,8 +178,8 @@ describe('ChangelogFetcher', () => {
 
       expect(releases).toEqual([{
         created_at: expect.any(moment),
-        name: 'bar',
         html_url: 'https://github.com/biz/buz/releases/tag/bar',
+        name: 'bar',
         prs: [{
           html_url: 'foobar-url',
           merged_at: expect.any(moment),
@@ -189,8 +189,8 @@ describe('ChangelogFetcher', () => {
         }]
       }, {
         created_at: expect.any(moment),
-        name: 'foo-name',
         html_url: 'foo-url',
+        name: 'foo-name',
         prs: [{
           html_url: 'foobiz-url',
           merged_at: expect.any(moment),
@@ -202,7 +202,7 @@ describe('ChangelogFetcher', () => {
       }]);
     });
 
-    it('should return a list of releases with their corresponding pull requests', async () => {
+    it('should handle pagination correctly', async () => {
       const fetcher = new ChangelogFetcher({
         base: 'foo',
         owner: 'biz',
@@ -215,8 +215,8 @@ describe('ChangelogFetcher', () => {
         .query({ page: 1, per_page: 100 })
         .reply(200, [{
           created_at: moment('2018-10-23T12'),
-          name: 'foo-name',
           html_url: 'foo-url',
+          name: 'foo-name',
           tag_name: 'foo-tag'
         }], {
           link: '<foo&page=2&per_page=100>; rel="last"'
@@ -275,8 +275,8 @@ describe('ChangelogFetcher', () => {
 
       expect(releases).toEqual([{
         created_at: expect.any(moment),
-        name: 'foo-name',
         html_url: 'foo-url',
+        name: 'foo-name',
         prs: [{
           html_url: 'foobar-url',
           merged_at: expect.any(moment),
