@@ -27,11 +27,15 @@
   "devDependencies": {
     "babel-cli": "^6.18.0",
     "babel-plugin-transform-async-to-module-method": "^6.16.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-node6": "^11.0.0",
     "eslint": "^3.10.2",
     "eslint-config-seegno": "^8.0.1",
     "jest": "^23.6.0",
     "nock": "^10.0.1"
+  },
+  "engines": {
+    "node": ">=6"
   },
   "jest": {
     "collectCoverage": true,
