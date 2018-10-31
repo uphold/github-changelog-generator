@@ -28,7 +28,6 @@ describe('ChangelogFetcher', () => {
       expect(fetcher.futureReleaseTag).toEqual('baz');
       expect(fetcher.owner).toEqual('biz');
       expect(fetcher.repo).toEqual('buz');
-      expect(fetcher.client.auth.token).toEqual('qux');
     });
 
     it('should set default values', () => {
@@ -68,6 +67,12 @@ describe('ChangelogFetcher', () => {
         .get('/repos/biz/buz/pulls')
         .query({ base: 'foo', page: 1, per_page: 100, state: 'closed' })
         .reply(200, [{
+          html_url: 'quxfoo-url',
+          merged_at: moment('2018-10-24T10'),
+          number: 'quxfoo-number',
+          title: 'quxfoo-title',
+          user: { html_url: 'quxfoo-user-url', login: 'quxfoo-user-login' }
+        }, {
           html_url: 'foobar-url',
           merged_at: moment('2018-10-23T10'),
           number: 'foobar-number',
@@ -214,7 +219,7 @@ describe('ChangelogFetcher', () => {
           html_url: 'foo-url',
           tag_name: 'foo-tag'
         }], {
-          Link: '<foo&page=2&per_page=100>; rel="last"'
+          link: '<foo&page=2&per_page=100>; rel="last"'
         });
 
       nock('https://api.github.com')
@@ -225,7 +230,7 @@ describe('ChangelogFetcher', () => {
           html_url: 'bar-url',
           tag_name: 'bar-tag'
         }], {
-          Link: '<foo&page=2&per_page=100>; rel="last"'
+          link: '<foo&page=2&per_page=100>; rel="last"'
         });
 
       nock('https://api.github.com')
@@ -250,7 +255,7 @@ describe('ChangelogFetcher', () => {
           title: 'barbiz-title',
           user: { html_url: 'barbiz-user-url', login: 'barbiz-user-login' }
         }], {
-          Link: '<foo&page=2&per_page=100>; rel="last"'
+          link: '<foo&page=2&per_page=100>; rel="last"'
         });
 
       nock('https://api.github.com')
@@ -263,7 +268,7 @@ describe('ChangelogFetcher', () => {
           title: 'barbuz-title',
           user: { html_url: 'barbuz-user-url', login: 'barbuz-user-login' }
         }], {
-          Link: '<foo&page=2&per_page=100>; rel="last"'
+          link: '<foo&page=2&per_page=100>; rel="last"'
         });
 
       const releases = await fetcher.fetchChangelog();

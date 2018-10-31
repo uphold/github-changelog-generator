@@ -3,10 +3,10 @@
  * Module dependencies.
  */
 
-const { assign, chain, has, flatten, find, range } = require('lodash');
-const GitHubApi = require('github');
+const { assign, chain, flatMap, find, range } = require('lodash');
 const Promise = require('bluebird');
 const moment = require('moment');
+const octokit = require('@octokit/rest');
 
 /**
  * Constants.
@@ -29,7 +29,7 @@ class ChangelogFetcher {
     this.futureReleaseTag = futureReleaseTag || futureRelease;
     this.owner = owner;
     this.repo = repo;
-    this.client = new GitHubApi({ Promise });
+    this.client = octokit();
 
     this.client.authenticate({ token, type: 'token' });
   }
@@ -74,8 +74,8 @@ class ChangelogFetcher {
     const prs = await this.client.pullRequests.getAll(options);
     const nextPages = await Promise.map(this.getNextPages(prs), page => this.client.pullRequests.getAll({ ...options, page }), { concurrency });
 
-    return chain(prs)
-      .concat(flatten(nextPages))
+    return chain(prs.data)
+      .concat(flatMap(nextPages, 'data'))
       .map(pr => assign(pr, { merged_at: moment.utc(pr.merged_at) }))
       .sortBy(pr => pr.merged_at.unix())
       .value();
@@ -96,7 +96,7 @@ class ChangelogFetcher {
     const releases = await this.client.repos.getReleases(options);
 
     if (this.futureRelease) {
-      releases.unshift({
+      releases.data.unshift({
         created_at: moment().format(),
         html_url: `https://github.com/${this.owner}/${this.repo}/releases/tag/${this.futureReleaseTag}`,
         name: this.futureRelease
@@ -105,8 +105,8 @@ class ChangelogFetcher {
 
     const nextPages = await Promise.map(this.getNextPages(releases), page => this.client.repos.getReleases({ ...options, page }), { concurrency });
 
-    return chain(releases)
-      .concat(flatten(nextPages))
+    return chain(releases.data)
+      .concat(flatMap(nextPages, 'data'))
       .map(release => assign(release, { created_at: moment.utc(release.created_at), prs: [] }))
       .sortBy(release => release.created_at.unix())
       .value();
@@ -116,12 +116,14 @@ class ChangelogFetcher {
    * Get the next pages.
    */
 
-  getNextPages(results) {
-    let lastPage = 1;
+  getNextPages(response) {
+    const lastPageUrl = this.client.hasLastPage(response);
 
-    if (has(results, 'meta.link')) {
-      lastPage = Number(results.meta.link.match(/<[^>]+[&?]page=([0-9]+)[^>]+>; rel="last"/)[1]);
+    if (!lastPageUrl) {
+      return [];
     }
+
+    const lastPage = Number(lastPageUrl.match(/page=([0-9]+)/)[1]);
 
     return range(2, lastPage + 1);
   }
