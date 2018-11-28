@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.8.0](https://github.com/uphold/github-changelog-generator/releases/tag/v0.8.0) (2018-11-28)
+- Add option to filter PRs by labels [\#62](https://github.com/uphold/github-changelog-generator/pull/62) ([Americas](https://github.com/Americas))
+- Update dev dependencies and flow [\#61](https://github.com/uphold/github-changelog-generator/pull/61) ([Americas](https://github.com/Americas))
+- Use shorthanded call to generate changelog [\#59](https://github.com/uphold/github-changelog-generator/pull/59) ([Americas](https://github.com/Americas))
+- Add support for node engine >= 6 [\#58](https://github.com/uphold/github-changelog-generator/pull/58) ([Americas](https://github.com/Americas))
+- Update github package to octokit [\#57](https://github.com/uphold/github-changelog-generator/pull/57) ([Americas](https://github.com/Americas))
+- Extract components [\#54](https://github.com/uphold/github-changelog-generator/pull/54) ([rplopes](https://github.com/rplopes))
+
 ## [0.7.0](https://github.com/uphold/github-changelog-generator/releases/tag/v0.7.0) (2018-06-07)
 - Infer owner and repo from git config [\#50](https://github.com/uphold/github-changelog-generator/pull/50) ([rplopes](https://github.com/rplopes))
 
