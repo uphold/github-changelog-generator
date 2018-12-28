@@ -72,8 +72,8 @@ class ChangelogFetcher {
       repo: this.repo,
       state: 'closed'
     };
-    const prs = await this.client.pullRequests.getAll(options);
-    const nextPages = await Promise.map(this.getNextPages(prs), page => this.client.pullRequests.getAll({ ...options, page }), { concurrency });
+    const prs = await this.client.pullRequests.list(options);
+    const nextPages = await Promise.map(this.getNextPages(prs), page => this.client.pullRequests.list({ ...options, page }), { concurrency });
 
     return chain(prs.data)
       .concat(flatMap(nextPages, 'data'))
@@ -95,7 +95,7 @@ class ChangelogFetcher {
       repo: this.repo
     };
 
-    const releases = await this.client.repos.getReleases(options);
+    const releases = await this.client.repos.listReleases(options);
 
     if (this.futureRelease) {
       releases.data.unshift({
@@ -105,7 +105,7 @@ class ChangelogFetcher {
       });
     }
 
-    const nextPages = await Promise.map(this.getNextPages(releases), page => this.client.repos.getReleases({ ...options, page }), { concurrency });
+    const nextPages = await Promise.map(this.getNextPages(releases), page => this.client.repos.listReleases({ ...options, page }), { concurrency });
 
     return chain(releases.data)
       .concat(flatMap(nextPages, 'data'))
