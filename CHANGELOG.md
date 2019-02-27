@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.8.1](https://github.com/uphold/github-changelog-generator/releases/tag/v0.8.1) (2019-02-27)
+- Update resolved dependencies [\#66](https://github.com/uphold/github-changelog-generator/pull/66) ([rplopes](https://github.com/rplopes))
+- Update dependencies [\#65](https://github.com/uphold/github-changelog-generator/pull/65) ([rplopes](https://github.com/rplopes))
+- Fix GitHub deprecation warnings [\#64](https://github.com/uphold/github-changelog-generator/pull/64) ([rplopes](https://github.com/rplopes))
+
 ## [0.8.0](https://github.com/uphold/github-changelog-generator/releases/tag/v0.8.0) (2018-11-28)
 - Add option to filter PRs by labels [\#62](https://github.com/uphold/github-changelog-generator/pull/62) ([Americas](https://github.com/Americas))
 - Update dev dependencies and flow [\#61](https://github.com/uphold/github-changelog-generator/pull/61) ([Americas](https://github.com/Americas))

@@ -86,9 +86,9 @@ class ChangelogFetcher {
         repo: _this2.repo,
         state: 'closed'
       };
-      const prs = yield _this2.client.pullRequests.getAll(options);
+      const prs = yield _this2.client.pullRequests.list(options);
       const nextPages = yield Promise.map(_this2.getNextPages(prs), function (page) {
-        return _this2.client.pullRequests.getAll(_extends({}, options, { page }));
+        return _this2.client.pullRequests.list(_extends({}, options, { page }));
       }, { concurrency });
 
       return chain(prs.data).concat(flatMap(nextPages, 'data')).filter(function ({ labels }) {
@@ -116,7 +116,7 @@ class ChangelogFetcher {
         repo: _this3.repo
       };
 
-      const releases = yield _this3.client.repos.getReleases(options);
+      const releases = yield _this3.client.repos.listReleases(options);
 
       if (_this3.futureRelease) {
         releases.data.unshift({
@@ -127,7 +127,7 @@ class ChangelogFetcher {
       }
 
       const nextPages = yield Promise.map(_this3.getNextPages(releases), function (page) {
-        return _this3.client.repos.getReleases(_extends({}, options, { page }));
+        return _this3.client.repos.listReleases(_extends({}, options, { page }));
       }, { concurrency });
 
       return chain(releases.data).concat(flatMap(nextPages, 'data')).map(function (release) {
