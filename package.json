@@ -4,7 +4,7 @@
   "description": "Generate changelog files from the project's GitHub PRs",
   "license": "MIT",
   "author": "Ricardo Lopes",
-  "main": "dist/index.js",
+  "main": "src/index.js",
   "bin": {
     "github-changelog-generator": "./bin/github-changelog-generator.js"
   },
@@ -14,8 +14,7 @@
     "lint": "eslint --cache src test",
     "release": "npm version -m 'Release %s'",
     "test": "jest",
-    "transpile": "rm -rf dist/* && babel src --copy-files --out-dir dist",
-    "version": "npm run transpile && npm run changelog && git add -A CHANGELOG.md dist"
+    "version": "npm run changelog && git add -A CHANGELOG.md"
   },
   "dependencies": {
     "@octokit/rest": "^15.15.1",
@@ -26,11 +25,6 @@
     "moment": "^2.24.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-eslint": "^10.0.1",
-    "babel-plugin-transform-async-to-module-method": "^6.24.1",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-preset-node6": "^11.0.0",
     "eslint": "^6.5.1",
     "eslint-config-uphold": "^1.0.0",
     "jest": "^23.6.0",
