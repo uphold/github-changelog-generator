@@ -1,4 +1,3 @@
-
 /**
  * Module dependencies.
  */
@@ -17,7 +16,10 @@ const program = require('commander');
 program
   .option('-b, --base-branch <name>', '[optional] specify the base branch name - master by default')
   .option('-f, --future-release <version>', '[optional] specify the next release version')
-  .option('-t, --future-release-tag <name>', '[optional] specify the next release tag name if it is different from the release version')
+  .option(
+    '-t, --future-release-tag <name>',
+    '[optional] specify the next release tag name if it is different from the release version'
+  )
   .option('-l, --labels <names>', '[optional] labels to filter pull requests by', val => val.split(','))
   .option('-o, --owner <name>', '[optional] owner of the repository')
   .option('-r, --repo <name>', '[optional] name of the repository')
