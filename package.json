@@ -1,6 +1,6 @@
 {
   "name": "@uphold/github-changelog-generator",
-  "version": "0.8.1",
+  "version": "1.0.0",
   "description": "Generate changelog files from the project's GitHub PRs",
   "license": "MIT",
   "author": "Ricardo Lopes",
@@ -45,7 +45,9 @@
       "<rootDir>"
     ],
     "restoreMocks": true,
-    "setupFilesAfterEnv": ["./test/setup.js"],
+    "setupFilesAfterEnv": [
+      "./test/setup.js"
+    ],
     "testEnvironment": "node"
   },
   "pre-commit": {

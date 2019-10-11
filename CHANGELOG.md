@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.0](https://github.com/uphold/github-changelog-generator/releases/tag/v1.0.0) (2019-10-11)
+- Update jest@24.9.0 [\#70](https://github.com/uphold/github-changelog-generator/pull/70) ([rplopes](https://github.com/rplopes))
+- Remove Babel [\#69](https://github.com/uphold/github-changelog-generator/pull/69) ([rplopes](https://github.com/rplopes))
+- Update dependencies [\#68](https://github.com/uphold/github-changelog-generator/pull/68) ([rplopes](https://github.com/rplopes))
+- Upgrade dependencies [\#67](https://github.com/uphold/github-changelog-generator/pull/67) ([rplopes](https://github.com/rplopes))
+
 ## [0.8.1](https://github.com/uphold/github-changelog-generator/releases/tag/v0.8.1) (2019-02-27)
 - Update resolved dependencies [\#66](https://github.com/uphold/github-changelog-generator/pull/66) ([rplopes](https://github.com/rplopes))
 - Update dependencies [\#65](https://github.com/uphold/github-changelog-generator/pull/65) ([rplopes](https://github.com/rplopes))
