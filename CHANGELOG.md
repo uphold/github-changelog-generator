@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.1](https://github.com/uphold/github-changelog-generator/releases/tag/v1.0.1) (2019-10-11)
+- Fix missing files from npm [\#71](https://github.com/uphold/github-changelog-generator/pull/71) ([rplopes](https://github.com/rplopes))
+
 ## [1.0.0](https://github.com/uphold/github-changelog-generator/releases/tag/v1.0.0) (2019-10-11)
 - Update jest@24.9.0 [\#70](https://github.com/uphold/github-changelog-generator/pull/70) ([rplopes](https://github.com/rplopes))
 - Remove Babel [\#69](https://github.com/uphold/github-changelog-generator/pull/69) ([rplopes](https://github.com/rplopes))
