@@ -1,4 +1,3 @@
-
 /**
  * Module dependencies.
  */
@@ -73,11 +72,23 @@ class ChangelogFetcher {
       state: 'closed'
     };
     const prs = await this.client.pullRequests.list(options);
-    const nextPages = await Promise.map(this.getNextPages(prs), page => this.client.pullRequests.list({ ...options, page }), { concurrency });
+    const nextPages = await Promise.map(
+      this.getNextPages(prs),
+      page => this.client.pullRequests.list({ ...options, page }),
+      { concurrency }
+    );
 
     return chain(prs.data)
       .concat(flatMap(nextPages, 'data'))
-      .filter(({ labels }) => isEmpty(this.labels) || !chain(labels).map('name').intersection(this.labels).isEmpty().value())
+      .filter(
+        ({ labels }) =>
+          isEmpty(this.labels) ||
+          !chain(labels)
+            .map('name')
+            .intersection(this.labels)
+            .isEmpty()
+            .value()
+      )
       .map(pr => assign(pr, { merged_at: moment.utc(pr.merged_at) }))
       .sortBy(pr => pr.merged_at.unix())
       .value();
@@ -105,7 +116,11 @@ class ChangelogFetcher {
       });
     }
 
-    const nextPages = await Promise.map(this.getNextPages(releases), page => this.client.repos.listReleases({ ...options, page }), { concurrency });
+    const nextPages = await Promise.map(
+      this.getNextPages(releases),
+      page => this.client.repos.listReleases({ ...options, page }),
+      { concurrency }
+    );
 
     return chain(releases.data)
       .concat(flatMap(nextPages, 'data'))
