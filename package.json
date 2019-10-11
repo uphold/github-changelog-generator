@@ -27,7 +27,7 @@
   "devDependencies": {
     "eslint": "^6.5.1",
     "eslint-config-uphold": "^1.0.0",
-    "jest": "^23.6.0",
+    "jest": "^24.9.0",
     "nock": "^10.0.1",
     "pre-commit": "^1.2.2",
     "prettier": "^1.18.2"
@@ -45,7 +45,7 @@
       "<rootDir>"
     ],
     "restoreMocks": true,
-    "setupTestFrameworkScriptFile": "./test/setup.js",
+    "setupFilesAfterEnv": ["./test/setup.js"],
     "testEnvironment": "node"
   },
   "pre-commit": {
