@@ -257,7 +257,8 @@ describe('ChangelogFetcher', () => {
             }
           ],
           {
-            link: '<foo&page=2&per_page=100>; rel="last"'
+            link:
+              '<https://api.github.com/repos/biz/buz/releases?page=2&per_page=100>; rel="next", <https://api.github.com/repos/biz/buz/releases?page=2&per_page=1000>; rel="last"'
           }
         );
 
@@ -274,7 +275,8 @@ describe('ChangelogFetcher', () => {
             }
           ],
           {
-            link: '<foo&page=2&per_page=100>; rel="last"'
+            link:
+              '<https://api.github.com/repos/biz/buz/releases&page=1&per_page=100>; rel="prev"; <https://api.github.com/repos/biz/buz/releases&page=1&per_page=100>; rel="first";'
           }
         );
 
@@ -307,7 +309,8 @@ describe('ChangelogFetcher', () => {
             }
           ],
           {
-            link: '<foo&page=2&per_page=100>; rel="last"'
+            link:
+              '<https://api.github.com/repos/biz/buz/pulls?page=2&per_page=100&base=foo&state=closed>; rel="next", <https://api.github.com/repos/biz/buz/pulls?page=2&per_page=100&base=foo&state=closed>; rel="last"'
           }
         );
 
@@ -326,7 +329,8 @@ describe('ChangelogFetcher', () => {
             }
           ],
           {
-            link: '<foo&page=2&per_page=100>; rel="last"'
+            link:
+              '<https://api.github.com/repos/biz/buz/pulls&page=1&per_page=100&base=foo&state=closed>; rel="prev"; <https://api.github.com/repos/biz/buz/pulls&page=1&per_page=100&base=foo&state=closed>; rel="first";'
           }
         );
 

@@ -4,16 +4,10 @@
  * Module dependencies.
  */
 
-const { assign, chain, flatMap, find, isEmpty, range } = require('lodash');
+const { assign, chain, find, isEmpty } = require('lodash');
+const Octokit = require('@octokit/rest');
 const Promise = require('bluebird');
 const moment = require('moment');
-const octokit = require('@octokit/rest');
-
-/**
- * Constants.
- */
-
-const concurrency = 20;
 
 /**
  * `ChangelogFetcher` class.
@@ -31,9 +25,9 @@ class ChangelogFetcher {
     this.labels = labels;
     this.owner = owner;
     this.repo = repo;
-    this.client = octokit();
-
-    this.client.authenticate({ token, type: 'token' });
+    this.client = new Octokit({
+      auth: `token ${token}`
+    });
   }
 
   /**
@@ -65,23 +59,18 @@ class ChangelogFetcher {
    */
 
   async getAllPullRequests() {
-    const options = {
+    const options = this.client.pulls.list.endpoint.merge({
       base: this.base,
       owner: this.owner,
       page: 1,
       per_page: 100,
       repo: this.repo,
       state: 'closed'
-    };
-    const prs = await this.client.pullRequests.list(options);
-    const nextPages = await Promise.map(
-      this.getNextPages(prs),
-      page => this.client.pullRequests.list({ ...options, page }),
-      { concurrency }
-    );
+    });
 
-    return chain(prs.data)
-      .concat(flatMap(nextPages, 'data'))
+    const prs = await this.client.paginate(options);
+
+    return chain(prs)
       .filter(
         ({ labels }) =>
           isEmpty(this.labels) ||
@@ -101,50 +90,27 @@ class ChangelogFetcher {
    */
 
   async getAllReleases() {
-    const options = {
+    const options = this.client.repos.listReleases.endpoint.merge({
       owner: this.owner,
       page: 1,
       per_page: 100,
       repo: this.repo
-    };
+    });
 
-    const releases = await this.client.repos.listReleases(options);
+    const releases = await this.client.paginate(options);
 
     if (this.futureRelease) {
-      releases.data.unshift({
+      releases.unshift({
         created_at: moment().format(),
         html_url: `https://github.com/${this.owner}/${this.repo}/releases/tag/${this.futureReleaseTag}`,
         name: this.futureRelease
       });
     }
 
-    const nextPages = await Promise.map(
-      this.getNextPages(releases),
-      page => this.client.repos.listReleases({ ...options, page }),
-      { concurrency }
-    );
-
-    return chain(releases.data)
-      .concat(flatMap(nextPages, 'data'))
+    return chain(releases)
       .map(release => assign(release, { created_at: moment.utc(release.created_at), prs: [] }))
       .sortBy(release => release.created_at.unix())
       .value();
-  }
-
-  /**
-   * Get the next pages.
-   */
-
-  getNextPages(response) {
-    const lastPageUrl = this.client.hasLastPage(response);
-
-    if (!lastPageUrl) {
-      return [];
-    }
-
-    const lastPage = Number(lastPageUrl.match(/page=([0-9]+)/)[1]);
-
-    return range(2, lastPage + 1);
   }
 }
 
