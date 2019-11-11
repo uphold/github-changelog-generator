@@ -5,7 +5,6 @@
  */
 
 const _ = require('lodash');
-const Promise = require('bluebird');
 const Octokit = require('@octokit/rest');
 const moment = require('moment');
 
