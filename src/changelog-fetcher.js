@@ -4,9 +4,9 @@
  * Module dependencies.
  */
 
-const { assign, chain, find, isEmpty } = require('lodash');
-const Octokit = require('@octokit/rest');
+const _ = require('lodash');
 const Promise = require('bluebird');
+const Octokit = require('@octokit/rest');
 const moment = require('moment');
 
 /**
@@ -35,7 +35,7 @@ class ChangelogFetcher {
    */
 
   assignPullRequestToRelease(releases, pr) {
-    const release = find(releases, release => pr.merged_at.isSameOrBefore(release.created_at));
+    const release = releases.find(release => pr.merged_at.isSameOrBefore(release.created_at));
 
     if (release) {
       release.prs.unshift(pr);
@@ -59,28 +59,27 @@ class ChangelogFetcher {
    */
 
   async getAllPullRequests() {
-    const options = this.client.pulls.list.endpoint.merge({
-      base: this.base,
-      owner: this.owner,
-      page: 1,
-      per_page: 100,
-      repo: this.repo,
-      state: 'closed'
-    });
+    const prs = await this.client.paginate(
+      this.client.pulls.list.endpoint.merge({
+        base: this.base,
+        owner: this.owner,
+        page: 1,
+        per_page: 100,
+        repo: this.repo,
+        state: 'closed'
+      })
+    );
 
-    const prs = await this.client.paginate(options);
-
-    return chain(prs)
+    return _(prs)
       .filter(
         ({ labels }) =>
-          isEmpty(this.labels) ||
-          !chain(labels)
+          _.isEmpty(this.labels) ||
+          !_(labels)
             .map('name')
             .intersection(this.labels)
             .isEmpty()
-            .value()
       )
-      .map(pr => assign(pr, { merged_at: moment.utc(pr.merged_at) }))
+      .map(pr => ({ ...pr, merged_at: moment.utc(pr.merged_at) }))
       .sortBy(pr => pr.merged_at.unix())
       .value();
   }
@@ -90,14 +89,14 @@ class ChangelogFetcher {
    */
 
   async getAllReleases() {
-    const options = this.client.repos.listReleases.endpoint.merge({
-      owner: this.owner,
-      page: 1,
-      per_page: 100,
-      repo: this.repo
-    });
-
-    const releases = await this.client.paginate(options);
+    const releases = await this.client.paginate(
+      this.client.repos.listReleases.endpoint.merge({
+        owner: this.owner,
+        page: 1,
+        per_page: 100,
+        repo: this.repo
+      })
+    );
 
     if (this.futureRelease) {
       releases.unshift({
@@ -107,8 +106,8 @@ class ChangelogFetcher {
       });
     }
 
-    return chain(releases)
-      .map(release => assign(release, { created_at: moment.utc(release.created_at), prs: [] }))
+    return _(releases)
+      .map(release => ({ ...release, created_at: moment.utc(release.created_at), prs: [] }))
       .sortBy(release => release.created_at.unix())
       .value();
   }
