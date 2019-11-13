@@ -24,6 +24,7 @@ program
   )
   .option('-l, --labels <names>', '[optional] labels to filter pull requests by', val => val.split(','))
   .option('-o, --owner <name>', '[optional] owner of the repository')
+  .option('-p, --package-name <name>', '[optional] specify the package name of your monorepo')
   .option('-r, --repo <name>', '[optional] name of the repository')
   .description('Run GitHub changelog generator.')
   .parse(process.argv);
@@ -33,7 +34,7 @@ program
  */
 
 const base = program.baseBranch || 'master';
-const { futureRelease, futureReleaseTag, labels } = program;
+const { futureRelease, futureReleaseTag, labels, packageName } = program;
 const token = process.env.GITHUB_TOKEN;
 let { owner, repo } = program;
 
@@ -66,7 +67,16 @@ if (!owner || !repo) {
  */
 
 async function run() {
-  const fetcher = new ChangelogFetcher({ base, futureRelease, futureReleaseTag, labels, owner, repo, token });
+  const fetcher = new ChangelogFetcher({
+    base,
+    futureRelease,
+    futureReleaseTag,
+    labels,
+    owner,
+    packageName,
+    repo,
+    token
+  });
   const releases = await fetcher.fetchChangelog();
 
   formatChangelog(releases).forEach(line => process.stdout.write(line));

@@ -17,16 +17,19 @@ class ChangelogFetcher {
    * Constructor.
    */
 
-  constructor({ base, futureRelease, futureReleaseTag, labels, owner, repo, token }) {
+  constructor({ base, futureRelease, futureReleaseTag, labels = [], owner, packageName, repo, token }) {
     this.base = base;
     this.futureRelease = futureRelease;
-    this.futureReleaseTag = futureReleaseTag || futureRelease;
+    this.futureReleaseTag = futureReleaseTag;
     this.labels = labels;
     this.owner = owner;
+    this.packageName = packageName;
     this.repo = repo;
     this.client = new Octokit({
       auth: `token ${token}`
     });
+
+    this.setDefaultValues();
   }
 
   /**
@@ -101,14 +104,67 @@ class ChangelogFetcher {
       releases.unshift({
         created_at: moment().format(),
         html_url: `https://github.com/${this.owner}/${this.repo}/releases/tag/${this.futureReleaseTag}`,
-        name: this.futureRelease
+        name: this.futureReleaseName
       });
     }
 
     return _(releases)
+      .filter(({ name }) => _.isEmpty(this.packageName) || _.startsWith(_.toLower(name), _.toLower(this.packageName)))
       .map(release => ({ ...release, created_at: moment.utc(release.created_at), prs: [] }))
       .sortBy(release => release.created_at.unix())
       .value();
+  }
+
+  /**
+   * Get `futureReleaseName`.
+   */
+
+  getFutureReleaseName() {
+    if (_.isEmpty(this.packageName)) {
+      return this.futureRelease;
+    }
+
+    return `${_.capitalize(this.packageName)} ${this.futureRelease}`;
+  }
+
+  /**
+   * Get `futureReleaseTag`.
+   */
+
+  getFutureReleaseTag() {
+    if (this.futureReleaseTag) {
+      return this.futureReleaseTag;
+    }
+
+    if (_.isEmpty(this.packageName)) {
+      return this.futureRelease;
+    }
+
+    return `${_.toLower(this.packageName)}-${this.futureRelease}`;
+  }
+
+  /**
+   * Get `labels`.
+   */
+
+  getLabels() {
+    if (_.isEmpty(this.packageName)) {
+      return this.labels;
+    }
+
+    this.labels.push(this.packageName);
+
+    return this.labels;
+  }
+
+  /**
+   * Set default values.
+   */
+
+  setDefaultValues() {
+    this.futureReleaseName = this.getFutureReleaseName();
+    this.futureReleaseTag = this.getFutureReleaseTag();
+    this.labels = this.getLabels();
   }
 }
 
