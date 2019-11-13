@@ -5,7 +5,9 @@
  */
 
 const { graphql } = require('@octokit/graphql');
+const capitalize = require('lodash/capitalize');
 const moment = require('moment');
+const startsWith = require('lodash/startsWith');
 
 /**
  * `ChangelogFetcher` class.
@@ -16,14 +18,17 @@ class ChangelogFetcher {
    * Constructor.
    */
 
-  constructor({ base, futureRelease, futureReleaseTag, labels, owner, repo, token }) {
+  constructor({ base, futureRelease, futureReleaseTag, labels = [], owner, packageName, repo, token }) {
     this.base = base;
     this.futureRelease = futureRelease;
-    this.futureReleaseTag = futureReleaseTag || futureRelease;
+    this.futureReleaseTag = futureReleaseTag;
     this.labels = labels || [];
     this.owner = owner;
+    this.packageName = packageName;
     this.repo = repo;
     this.client = graphql.defaults({ headers: { authorization: `token ${token}` } });
+
+    this.setDefaultValues();
   }
 
   /**
@@ -75,7 +80,7 @@ class ChangelogFetcher {
     }
 
     // Get the latest release.
-    const latestRelease = await this.getLatestRelease();
+    const latestRelease = this.packageName ? await this.getLatestPackageRelease() : await this.getLatestRelease();
 
     if (latestRelease.tagName === this.futureReleaseTag) {
       throw new Error('Changelog already on the latest release');
@@ -87,7 +92,7 @@ class ChangelogFetcher {
     return [
       {
         createdAt: moment.utc(),
-        name: this.futureRelease,
+        name: this.futureReleaseName,
         pullRequests,
         url: `https://github.com/${this.owner}/${this.repo}/releases/tag/${this.futureReleaseTag}`
       }
@@ -120,6 +125,55 @@ class ChangelogFetcher {
     release.tagCommit.committedDate = moment.utc(release.tagCommit.committedDate);
 
     return release;
+  }
+
+  /**
+   * Get the latest package release.
+   *
+   * @return {Object} release - the latest package release
+   */
+  async getLatestPackageRelease() {
+    const query = `
+    query latestRelease($owner: String!, $repo: String!) {
+      repository(owner: $owner, name: $repo){
+        refs(query: "${this.packageName}", refPrefix: "refs/tags/", last:1)
+        {
+          edges {
+            node {
+              name
+            }
+          }
+        }
+      }
+    }`;
+
+    const result = await this.client(query, { owner: this.owner, repo: this.repo });
+
+    const tagName = result.repository.refs.edges[0].node.name;
+
+    const releaseQuery = `
+    query latestRelease($owner: String!, $repo: String!, $tagName: String!) {
+      repository(owner: $owner, name: $repo){
+        release(tagName: $tagName) {
+          createdAt
+        }
+      }
+    }`;
+
+    const resultRelease = await this.client(releaseQuery, {
+      owner: this.owner,
+      repo: this.repo,
+      tagName
+    });
+
+    const committedDate = resultRelease.repository.release.createdAt;
+
+    return {
+      tagCommit: {
+        committedDate: moment.utc(committedDate),
+      },
+      tagName
+    };
   }
 
   /**
@@ -265,12 +319,14 @@ class ChangelogFetcher {
       ({ releases, cursor, hasMoreResults } = await this.getReleasesQuery(cursor));
 
       result.push(
-        ...releases.map(({ name, tagCommit, url }) => ({
-          createdAt: moment(tagCommit.committedDate),
-          name,
-          pullRequests: [],
-          url
-        }))
+        ...releases
+          .filter(({ name }) => !this.packageName || startsWith(name.toLowerCase(), this.packageName.toLowerCase()))
+          .map(({ name, tagCommit, url }) => ({
+            createdAt: moment(tagCommit.committedDate),
+            name,
+            pullRequests: [],
+            url
+          }))
       );
     } while (hasMoreResults);
 
@@ -292,6 +348,58 @@ class ChangelogFetcher {
     const result = await this.client(query, { owner: this.owner, repo: this.repo });
 
     return moment.utc(result.repository.createdAt);
+  }
+
+  /**
+   * Get `futureReleaseName`.
+   */
+
+  getFutureReleaseName() {
+    if (!this.packageName) {
+      return this.futureRelease;
+    }
+
+    return `${capitalize(this.packageName)} ${this.futureRelease}`;
+  }
+
+  /**
+   * Get `futureReleaseTag`.
+   */
+
+  getFutureReleaseTag() {
+    if (this.futureReleaseTag) {
+      return this.futureReleaseTag;
+    }
+
+    if (!this.packageName) {
+      return this.futureRelease;
+    }
+
+    return `${this.packageName.toLowerCase()}-${this.futureRelease}`;
+  }
+
+  /**
+   * Get `labels`.
+   */
+
+  getLabels() {
+    if (!this.packageName) {
+      return this.labels;
+    }
+
+    this.labels.push(this.packageName);
+
+    return this.labels;
+  }
+
+  /**
+   * Set default values.
+   */
+
+  setDefaultValues() {
+    this.futureReleaseName = this.getFutureReleaseName();
+    this.futureReleaseTag = this.getFutureReleaseTag();
+    this.labels = this.getLabels();
   }
 }
 
