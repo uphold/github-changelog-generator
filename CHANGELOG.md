@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.2](https://github.com/uphold/github-changelog-generator/releases/tag/v1.0.2) (2019-11-13)
+- Update octokit/rest@16.34.1 [\#73](https://github.com/uphold/github-changelog-generator/pull/73) ([cristianooliveira](https://github.com/cristianooliveira))
+
 ## [1.0.1](https://github.com/uphold/github-changelog-generator/releases/tag/v1.0.1) (2019-10-11)
 - Fix missing files from npm [\#71](https://github.com/uphold/github-changelog-generator/pull/71) ([rplopes](https://github.com/rplopes))
 
