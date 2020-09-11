@@ -25,6 +25,7 @@ program
   .option('-l, --labels <names>', '[optional] labels to filter pull requests by', val => val.split(','))
   .option('-o, --owner <name>', '[optional] owner of the repository')
   .option('-r, --repo <name>', '[optional] name of the repository')
+  .option('--rebuild', 'rebuild the full changelog', false)
   .description('Run GitHub changelog generator.')
   .parse(process.argv);
 
@@ -33,7 +34,7 @@ program
  */
 
 const base = program.baseBranch || 'master';
-const { futureRelease, futureReleaseTag, labels } = program;
+const { futureRelease, futureReleaseTag, labels, rebuild } = program;
 const token = process.env.GITHUB_TOKEN;
 let { owner, repo } = program;
 
@@ -67,7 +68,7 @@ if (!owner || !repo) {
 
 async function run() {
   const fetcher = new ChangelogFetcher({ base, futureRelease, futureReleaseTag, labels, owner, repo, token });
-  const releases = await fetcher.fetchChangelog();
+  const releases = await (rebuild ? fetcher.fetchFullChangelog() : fetcher.fetchLatestChangelog());
 
   formatChangelog(releases).forEach(line => process.stdout.write(line));
 }
