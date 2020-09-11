@@ -9,11 +9,11 @@ module.exports.formatChangelog = releases => {
 
   for (const release of releases) {
     changelog.push(
-      `\n## [${release.name || release.tag_name}](${release.html_url}) (${release.created_at.format('YYYY-MM-DD')})\n`
+      `\n## [${release.name || release.tagName}](${release.url}) (${release.createdAt.format('YYYY-MM-DD')})\n`
     );
 
-    for (const pr of release.prs) {
-      changelog.push(`- ${pr.title} [\\#${pr.number}](${pr.html_url}) ([${pr.user.login}](${pr.user.html_url}))\n`);
+    for (const { author, number, title, url } of release.pullRequests) {
+      changelog.push(`- ${title} [\\#${number}](${url}) ([${author.login}](${author.url}))\n`);
     }
   }
 

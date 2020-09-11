@@ -16,43 +16,43 @@ describe('ChangelogFormatter', () => {
     it('should return an array of lines for releases and pull requests in the expected format', () => {
       const releases = [
         {
-          created_at: moment('2018-10-23'),
-          html_url: 'foo-url',
+          createdAt: moment('2018-10-23'),
           name: 'foo-name',
-          prs: [
+          pullRequests: [
             {
-              html_url: 'foobar-url',
+              author: { login: 'foobar-user-login', url: 'foobar-user-url' },
               number: 'foobar-number',
               title: 'foobar-title',
-              user: { html_url: 'foobar-user-url', login: 'foobar-user-login' }
+              url: 'foobar-url'
             },
             {
-              html_url: 'foobiz-url',
+              author: { login: 'foobiz-user-login', url: 'foobiz-user-url' },
               number: 'foobiz-number',
               title: 'foobiz-title',
-              user: { html_url: 'foobiz-user-url', login: 'foobiz-user-login' }
+              url: 'foobiz-url'
             }
           ],
-          tag_name: 'foo-tag'
+          tagName: 'foo-tag',
+          url: 'foo-url'
         },
         {
-          created_at: moment('2018-10-22'),
-          html_url: 'bar-url',
-          prs: [
+          createdAt: moment('2018-10-22'),
+          pullRequests: [
             {
-              html_url: 'barbiz-url',
+              author: { login: 'barbiz-user-login', url: 'barbiz-user-url' },
               number: 'barbiz-number',
               title: 'barbiz-title',
-              user: { html_url: 'barbiz-user-url', login: 'barbiz-user-login' }
+              url: 'barbiz-url'
             },
             {
-              html_url: 'barbuz-url',
+              author: { login: 'barbuz-user-login', url: 'barbuz-user-url' },
               number: 'barbuz-number',
               title: 'barbuz-title',
-              user: { html_url: 'barbuz-user-url', login: 'barbuz-user-login' }
+              url: 'barbuz-url'
             }
           ],
-          tag_name: 'bar-tag'
+          tagName: 'bar-tag',
+          url: 'bar-url'
         }
       ];
 
