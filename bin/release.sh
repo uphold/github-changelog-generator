@@ -6,7 +6,7 @@ release() {
   yarn version --no-git-tag-version --new-version ${1:-patch}
 
   # Get the new version number.
-  local version=`grep -m1 version package.json | awk -F: '{ print $2 }' | sed 's/[", ]//g'`
+  local version=`grep -m1 version package.json | cut -d '"' -f4`
 
   # Create deploy branch.
   git checkout -b deploy/${version}
