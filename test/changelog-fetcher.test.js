@@ -14,7 +14,7 @@ const nock = require('nock');
 
 describe('ChangelogFetcher', () => {
   function getDataForRequest(requestBody, split = false) {
-    const { query, variables } = JSON.parse(requestBody);
+    const { query, variables } = requestBody;
 
     if (/query latestRelease\(/.test(query)) {
       return {
