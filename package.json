@@ -10,7 +10,7 @@
   },
   "repository": "uphold/github-changelog-generator",
   "scripts": {
-    "changelog": "echo \"$(./bin/github-changelog-generator.js -f $npm_package_version -t v$npm_package_version)$(tail -n +1 CHANGELOG.md)\" > CHANGELOG.md",
+    "changelog": "echo \"$(./bin/github-changelog-generator.js -f $npm_package_version -t v$npm_package_version)\n$(tail -n +2 CHANGELOG.md)\" > CHANGELOG.md",
     "lint": "eslint --cache src test",
     "release": "npm version -m 'Release %s'",
     "test": "jest",
