@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.0.0](https://github.com/uphold/github-changelog-generator/releases/tag/v2.0.0) (2021-04-15)
+- Bump packages [\#86](https://github.com/uphold/github-changelog-generator/pull/86) ([Americas](https://github.com/Americas))
+- Improve Changelog generation performance [\#80](https://github.com/uphold/github-changelog-generator/pull/80) ([goncalvesnelson](https://github.com/goncalvesnelson))
+- Release 1.0.2 [\#74](https://github.com/uphold/github-changelog-generator/pull/74) ([cristianooliveira](https://github.com/cristianooliveira))
+
 ## [1.0.2](https://github.com/uphold/github-changelog-generator/releases/tag/v1.0.2) (2019-11-13)
 - Update octokit/rest@16.34.1 [\#73](https://github.com/uphold/github-changelog-generator/pull/73) ([cristianooliveira](https://github.com/cristianooliveira))
 
