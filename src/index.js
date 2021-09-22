@@ -4,12 +4,18 @@
  * Module dependencies.
  */
 
-const { readFileSync } = require('fs');
+const { Command } = require('commander');
 const { formatChangelog } = require('./changelog-formatter');
+const { readFileSync } = require('fs');
 const ChangelogFetcher = require('./changelog-fetcher');
 const ini = require('ini');
 const path = require('path');
-const program = require('commander');
+
+/**
+ * Instances.
+ */
+
+const program = new Command();
 
 /**
  * Command-line program definition.
@@ -33,10 +39,11 @@ program
  * Options.
  */
 
-const base = program.baseBranch || 'master';
-const { futureRelease, futureReleaseTag, labels, rebuild } = program;
+const options = program.opts();
+const base = options.baseBranch || 'master';
+const { futureRelease, futureReleaseTag, labels, rebuild } = options;
 const token = process.env.GITHUB_TOKEN;
-let { owner, repo } = program;
+let { owner, repo } = options;
 
 /**
  * Infer owner and repo from git config if not provided.
