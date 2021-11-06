@@ -1,5 +1,8 @@
 # Changelog
 
+## [2.1.0](https://github.com/uphold/github-changelog-generator/releases/tag/v2.1.0) (2021-11-06)
+- Bump dependencies [\#96](https://github.com/uphold/github-changelog-generator/pull/96) ([diogotorres97](https://github.com/diogotorres97))
+
 ## [2.0.0](https://github.com/uphold/github-changelog-generator/releases/tag/v2.0.0) (2021-04-15)
 - Simplify version grep in release script [\#89](https://github.com/uphold/github-changelog-generator/pull/89) ([Americas](https://github.com/Americas))
 - Add release script [\#88](https://github.com/uphold/github-changelog-generator/pull/88) ([Americas](https://github.com/Americas))
