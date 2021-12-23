@@ -5,7 +5,7 @@
  */
 
 const _ = require('lodash');
-const Octokit = require('@octokit/rest');
+const { Octokit } = require('@octokit/rest');
 const moment = require('moment');
 
 /**
