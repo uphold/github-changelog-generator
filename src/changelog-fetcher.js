@@ -109,12 +109,18 @@ class ChangelogFetcher {
           }
           tagName
         }
+        createdAt
       }
     }`;
     const result = await this.client(query, { owner: this.owner, repo: this.repo });
 
     // Extract release from nested result.
     const release = result.repository.latestRelease;
+
+    // For shiny new repositories without releases, use the repository creation date instead.
+    if (!release) {
+      return { tagCommit: { committedDate: moment.utc(result.repository.createdAt) } };
+    }
 
     // Transform string timestamp into moment.
     release.tagCommit.committedDate = moment.utc(release.tagCommit.committedDate);

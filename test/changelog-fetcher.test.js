@@ -20,6 +20,7 @@ describe('ChangelogFetcher', () => {
       return {
         data: {
           repository: {
+            createdAt: moment('2017-10-22T12').toISOString(),
             latestRelease: {
               tagCommit: {
                 committedDate: moment('2018-10-22T12').toISOString()
@@ -651,6 +652,32 @@ describe('ChangelogFetcher', () => {
           committedDate: moment.utc(moment('2018-10-22T12').toISOString())
         },
         tagName: 'latestRelease'
+      });
+    });
+
+    it('should return a mocked latest release if the repository has no releases', async () => {
+      const fetcher = new ChangelogFetcher({
+        owner: 'biz',
+        repo: 'buz',
+        token: 'qux'
+      });
+
+      nock('https://api.github.com')
+        .post('/graphql')
+        .reply(200, (_, requestBody) => {
+          const mockData = getDataForRequest(requestBody);
+
+          mockData.data.repository.latestRelease = undefined;
+
+          return mockData;
+        });
+
+      const result = await fetcher.getLatestRelease();
+
+      expect(result).toEqual({
+        tagCommit: {
+          committedDate: moment.utc(moment('2017-10-22T12').toISOString())
+        }
       });
     });
   });
