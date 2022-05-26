@@ -1,5 +1,8 @@
 # Changelog
 
+## [3.1.0](https://github.com/uphold/github-changelog-generator/releases/tag/v3.1.0) (2022-05-26)
+- Fix generator to work on repos without releases [\#102](https://github.com/uphold/github-changelog-generator/pull/102) ([Americas](https://github.com/Americas))
+
 ## [3.0.0](https://github.com/uphold/github-changelog-generator/releases/tag/v3.0.0) (2021-11-08)
 - Bump dependencies [\#96](https://github.com/uphold/github-changelog-generator/pull/96) ([diogotorres97](https://github.com/diogotorres97))
 
