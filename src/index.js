@@ -55,7 +55,7 @@ if (!owner || !repo) {
   try {
     const gitconfig = readFileSync(path.join(dir, '.git/config'), 'utf-8');
     const remoteOrigin = ini.parse(gitconfig)['remote "origin"'];
-    const match = remoteOrigin.url.match(/.+:([^/]+)\/(.+)\.git/);
+    const match = remoteOrigin.url.match(/github\.com[:/]([^/]+)\/(.+?)(?:\.git)?$/);
 
     owner = owner || match[1];
     repo = repo || match[2];
