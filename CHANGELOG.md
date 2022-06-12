@@ -1,5 +1,8 @@
 # Changelog
 
+## [3.2.0](https://github.com/uphold/github-changelog-generator/releases/tag/v3.2.0) (2022-06-12)
+- Support http remotes when detecting repo and owner [\#107](https://github.com/uphold/github-changelog-generator/pull/107) ([satazor](https://github.com/satazor))
+
 ## [3.1.0](https://github.com/uphold/github-changelog-generator/releases/tag/v3.1.0) (2022-05-26)
 - Fix generator to work on repos without releases [\#102](https://github.com/uphold/github-changelog-generator/pull/102) ([Americas](https://github.com/Americas))
 
