@@ -18,7 +18,7 @@
     "@octokit/graphql": "^4.8.0",
     "commander": "^8.3.0",
     "ini": "^2.0.0",
-    "moment": "^2.29.1"
+    "moment": "^2.29.3"
   },
   "devDependencies": {
     "eslint": "^7.32.0",
@@ -27,6 +27,9 @@
     "nock": "^13.1.4",
     "pre-commit": "^1.2.2",
     "prettier": "^2.4.1"
+  },
+  "resolutions": {
+    "@octokit/graphql/@octokit/request": "5.6.3"
   },
   "engines": {
     "node": ">=12"
