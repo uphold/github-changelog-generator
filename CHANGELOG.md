@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.3.0](https://github.com/uphold/github-changelog-generator/releases/tag/v3.3.0) (2022-07-11)
+- Bump node-fetch from 2.6.6 to 2.6.7 [\#106](https://github.com/uphold/github-changelog-generator/pull/106) ([dependabot](https://github.com/apps/dependabot))
+- Bump moment from 2.29.1 to 2.29.4 [\#110](https://github.com/uphold/github-changelog-generator/pull/110) ([dependabot](https://github.com/apps/dependabot))
+
 ## [3.2.0](https://github.com/uphold/github-changelog-generator/releases/tag/v3.2.0) (2022-06-12)
 - Support http remotes when detecting repo and owner [\#107](https://github.com/uphold/github-changelog-generator/pull/107) ([satazor](https://github.com/satazor))
 
