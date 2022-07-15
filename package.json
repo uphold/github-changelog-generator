@@ -18,7 +18,7 @@
     "@octokit/graphql": "^4.8.0",
     "commander": "^8.3.0",
     "ini": "^2.0.0",
-    "moment": "^2.29.1"
+    "moment": "^2.29.4"
   },
   "devDependencies": {
     "eslint": "^7.32.0",
