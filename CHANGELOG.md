@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.3.1](https://github.com/uphold/github-changelog-generator/releases/tag/v3.3.1) (2022-12-20)
+- Update dev dependencies [\#113](https://github.com/uphold/github-changelog-generator/pull/113) ([goncalvesnelson](https://github.com/goncalvesnelson))
+- Bump minimist from 1.2.5 to 1.2.6 [\#104](https://github.com/uphold/github-changelog-generator/pull/104) ([dependabot](https://github.com/apps/dependabot))
+
 ## [3.3.0](https://github.com/uphold/github-changelog-generator/releases/tag/v3.3.0) (2022-07-11)
 - Bump node-fetch from 2.6.6 to 2.6.7 [\#106](https://github.com/uphold/github-changelog-generator/pull/106) ([dependabot](https://github.com/apps/dependabot))
 - Bump moment from 2.29.1 to 2.29.4 [\#110](https://github.com/uphold/github-changelog-generator/pull/110) ([dependabot](https://github.com/apps/dependabot))
