@@ -15,9 +15,9 @@
     "test": "jest"
   },
   "dependencies": {
-    "@octokit/graphql": "^4.8.0",
-    "commander": "^8.3.0",
-    "ini": "^2.0.0",
+    "@octokit/graphql": "^5.0.5",
+    "commander": "^10.0.0",
+    "ini": "^4.1.0",
     "moment": "^2.29.1"
   },
   "devDependencies": {
@@ -29,7 +29,7 @@
     "prettier": "^2.8.1"
   },
   "engines": {
-    "node": ">=14"
+    "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
   },
   "jest": {
     "collectCoverage": true,
