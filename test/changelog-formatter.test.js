@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 
-const { formatChangelog } = require('src/changelog-formatter');
+const { formatChangelog } = require('../src/changelog-formatter');
 const moment = require('moment');
 
 /**
