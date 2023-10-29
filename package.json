@@ -18,6 +18,7 @@
     "@octokit/graphql": "^4.8.0",
     "commander": "^8.3.0",
     "ini": "^2.0.0",
+    "look-it-up": "^2.1.0",
     "moment": "^2.29.1"
   },
   "devDependencies": {
