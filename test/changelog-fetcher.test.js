@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 
-const ChangelogFetcher = require('src/changelog-fetcher');
+const ChangelogFetcher = require('../src/changelog-fetcher');
 const moment = require('moment');
 const nock = require('nock');
 
@@ -16,21 +16,24 @@ describe('ChangelogFetcher', () => {
   function getDataForRequest(requestBody, split = false) {
     const { query, variables } = requestBody;
 
-    if (/query latestRelease\(/.test(query)) {
+    if (/query getLatestRelease\(/.test(query)) {
       return {
         data: {
           repository: {
             createdAt: moment('2017-10-22T12').toISOString(),
             latestRelease: {
+              name: 'latest-release',
               tagCommit: {
                 committedDate: moment('2018-10-22T12').toISOString()
               },
-              tagName: 'latestRelease'
+              tagName: 'latest-release',
+              url: 'latest-release-url'
             }
           }
         }
       };
-    } else if (/query pullRequestsBefore\(/.test(query)) {
+    } else if (/query getPullRequests\(/.test(query)) {
+      const maybeIncludeFiles = files => (query.includes('files (') ? { files: { nodes: files } } : {});
       const allNodes = [
         {
           author: { login: 'quxfoo-user-login', url: 'quxfoo-user-url' },
@@ -38,7 +41,8 @@ describe('ChangelogFetcher', () => {
           number: 'quxfoo-number',
           title: 'quxfoo-title',
           updatedAt: moment('2018-10-24T10').toISOString(),
-          url: 'quxfoo-url'
+          url: 'quxfoo-url',
+          ...maybeIncludeFiles([{ path: 'packages/quxfoo/index.js' }])
         },
         {
           author: { login: 'foobar-user-login', url: 'foobar-user-url' },
@@ -46,7 +50,8 @@ describe('ChangelogFetcher', () => {
           number: 'foobar-number',
           title: 'foobar-title',
           updatedAt: moment('2018-10-23T10').toISOString(),
-          url: 'foobar-url'
+          url: 'foobar-url',
+          ...maybeIncludeFiles([{ path: 'packages/foobar/index.js' }])
         },
         {
           author: { login: 'foobiz-user-login', url: 'foobiz-user-url' },
@@ -54,7 +59,8 @@ describe('ChangelogFetcher', () => {
           number: 'foobiz-number',
           title: 'foobiz-title',
           updatedAt: moment('2018-10-22T20').toISOString(),
-          url: 'foobiz-url'
+          url: 'foobiz-url',
+          ...maybeIncludeFiles([{ path: 'packages/foobiz/index.js' }])
         },
         {
           author: { login: 'barbuz-user-login', url: 'barbuz-user-url' },
@@ -62,7 +68,8 @@ describe('ChangelogFetcher', () => {
           number: 'barbuz-number',
           title: 'barbuz-title',
           updatedAt: moment('2018-10-22T15').toISOString(),
-          url: 'barbuz-url'
+          url: 'barbuz-url',
+          ...maybeIncludeFiles([{ path: 'packages/barbuz/index.js' }])
         },
         {
           author: { login: 'barbiz-user-login', url: 'barbiz-user-url' },
@@ -70,7 +77,8 @@ describe('ChangelogFetcher', () => {
           number: 'barbiz-number',
           title: 'barbiz-title',
           updatedAt: moment('2018-10-22T10').toISOString(),
-          url: 'barbiz-url'
+          url: 'barbiz-url',
+          ...maybeIncludeFiles([{ path: 'packages/barbiz/index.js' }])
         }
       ];
 
@@ -99,7 +107,7 @@ describe('ChangelogFetcher', () => {
           }
         }
       };
-    } else if (/query repositoryCreation\(/.test(query)) {
+    } else if (/query getRepositoryCreatedAt\(/.test(query)) {
       return {
         data: {
           repository: {
@@ -114,6 +122,7 @@ describe('ChangelogFetcher', () => {
           tagCommit: {
             committedDate: moment('2018-10-23T12').toISOString()
           },
+          tagName: 'foobar-name',
           url: 'foobar-url'
         },
         {
@@ -121,6 +130,7 @@ describe('ChangelogFetcher', () => {
           tagCommit: {
             committedDate: moment('2018-10-22T12').toISOString()
           },
+          tagName: 'bizbaz-name',
           url: 'bizbaz-url'
         }
       ];
@@ -153,19 +163,23 @@ describe('ChangelogFetcher', () => {
     it('should set all defined fields', () => {
       const fetcher = new ChangelogFetcher({
         base: 'foo',
+        changedFilesPrefix: 'foz',
         futureRelease: 'bar',
         futureReleaseTag: 'baz',
         labels: 'bez',
         owner: 'biz',
+        releaseTagPrefix: 'boz',
         repo: 'buz',
         token: 'qux'
       });
 
       expect(fetcher.base).toEqual('foo');
+      expect(fetcher.changedFilesPrefix).toEqual('foz');
       expect(fetcher.futureRelease).toEqual('bar');
       expect(fetcher.futureReleaseTag).toEqual('baz');
       expect(fetcher.labels).toEqual('bez');
       expect(fetcher.owner).toEqual('biz');
+      expect(fetcher.releaseTagPrefix).toEqual('boz');
       expect(fetcher.repo).toEqual('buz');
     });
 
@@ -310,7 +324,66 @@ describe('ChangelogFetcher', () => {
       ]);
     });
 
-    it('should filter pull requests by the given list of labels', async () => {
+    it('should filter releases by the given releaseTagPrefix', async () => {
+      const fetcher = new ChangelogFetcher({
+        base: 'foo',
+        owner: 'biz',
+        releaseTagPrefix: 'foobar-',
+        repo: 'buz',
+        token: 'qux'
+      });
+
+      nock('https://api.github.com')
+        .post('/graphql')
+        .times(3)
+        .reply(200, (_, requestBody) => getDataForRequest(requestBody));
+
+      const releases = await fetcher.fetchFullChangelog();
+
+      expect(releases).toEqual([
+        {
+          createdAt: moment(moment('2018-10-23T12').toISOString()),
+          name: 'foobar-name',
+          pullRequests: [
+            {
+              author: { login: 'foobar-user-login', url: 'foobar-user-url' },
+              mergedAt: moment('2018-10-23T10').toISOString(),
+              number: 'foobar-number',
+              title: 'foobar-title',
+              updatedAt: moment('2018-10-23T10').toISOString(),
+              url: 'foobar-url'
+            },
+            {
+              author: { login: 'foobiz-user-login', url: 'foobiz-user-url' },
+              mergedAt: moment('2018-10-22T20').toISOString(),
+              number: 'foobiz-number',
+              title: 'foobiz-title',
+              updatedAt: moment('2018-10-22T20').toISOString(),
+              url: 'foobiz-url'
+            },
+            {
+              author: { login: 'barbiz-user-login', url: 'barbiz-user-url' },
+              mergedAt: moment('2018-10-22T10').toISOString(),
+              number: 'barbiz-number',
+              title: 'barbiz-title',
+              updatedAt: moment('2018-10-22T10').toISOString(),
+              url: 'barbiz-url'
+            },
+            {
+              author: { login: 'barbuz-user-login', url: 'barbuz-user-url' },
+              mergedAt: moment('2018-10-21T05').toISOString(),
+              number: 'barbuz-number',
+              title: 'barbuz-title',
+              updatedAt: moment('2018-10-22T15').toISOString(),
+              url: 'barbuz-url'
+            }
+          ],
+          url: 'foobar-url'
+        }
+      ]);
+    });
+
+    it('should filter pull requests by the given labels', async () => {
       const fetcher = new ChangelogFetcher({
         base: 'foo',
         futureRelease: 'futRel',
@@ -360,6 +433,48 @@ describe('ChangelogFetcher', () => {
         }
       ]);
     });
+
+    it('should filter pull requests by the given changedFilesPrefix', async () => {
+      const fetcher = new ChangelogFetcher({
+        base: 'foo',
+        changedFilesPrefix: 'packages/foobar/',
+        futureRelease: 'futRel',
+        owner: 'biz',
+        repo: 'buz',
+        token: 'qux'
+      });
+
+      nock('https://api.github.com')
+        .post('/graphql')
+        .times(3)
+        .reply(200, (_, requestBody) => getDataForRequest(requestBody));
+
+      const releases = await fetcher.fetchFullChangelog();
+
+      expect(releases).toEqual([
+        {
+          createdAt: moment(moment('2018-10-23T12').toISOString()),
+          name: 'foobar-name',
+          pullRequests: [
+            {
+              author: { login: 'foobar-user-login', url: 'foobar-user-url' },
+              mergedAt: moment('2018-10-23T10').toISOString(),
+              number: 'foobar-number',
+              title: 'foobar-title',
+              updatedAt: moment('2018-10-23T10').toISOString(),
+              url: 'foobar-url'
+            }
+          ],
+          url: 'foobar-url'
+        },
+        {
+          createdAt: moment(moment('2018-10-22T12').toISOString()),
+          name: 'bizbaz-name',
+          pullRequests: [],
+          url: 'bizbaz-url'
+        }
+      ]);
+    });
   });
 
   describe('fetchLatestChangelog()', () => {
@@ -375,7 +490,7 @@ describe('ChangelogFetcher', () => {
       expect(releases).toEqual([]);
     });
 
-    it('should throw an error if the futureReleaseTag is already the latest realease', async () => {
+    it('should throw an error if the futureReleaseTag is already the latest release', async () => {
       const fetcher = new ChangelogFetcher({
         base: 'foo',
         futureRelease: 'bar',
@@ -507,7 +622,43 @@ describe('ChangelogFetcher', () => {
       ]);
     });
 
-    it('should filter pull requests by the given list of labels', async () => {
+    it('should filter releases by the given releaseTagPrefix', async () => {
+      const fetcher = new ChangelogFetcher({
+        base: 'foo',
+        futureRelease: 'futRel',
+        owner: 'biz',
+        releaseTagPrefix: 'foobar-',
+        repo: 'buz',
+        token: 'qux'
+      });
+
+      nock('https://api.github.com')
+        .post('/graphql')
+        .times(2)
+        .reply(200, (_, requestBody) => getDataForRequest(requestBody));
+
+      const releases = await fetcher.fetchLatestChangelog();
+
+      expect(releases).toEqual([
+        {
+          createdAt: expect.any(moment),
+          name: 'futRel',
+          pullRequests: [
+            {
+              author: { login: 'quxfoo-user-login', url: 'quxfoo-user-url' },
+              mergedAt: moment('2018-10-24T10').toISOString(),
+              number: 'quxfoo-number',
+              title: 'quxfoo-title',
+              updatedAt: moment('2018-10-24T10').toISOString(),
+              url: 'quxfoo-url'
+            }
+          ],
+          url: 'https://github.com/biz/buz/releases/tag/futRel'
+        }
+      ]);
+    });
+
+    it('should filter pull requests by the given labels', async () => {
       const fetcher = new ChangelogFetcher({
         base: 'foo',
         futureRelease: 'futRel',
@@ -544,6 +695,42 @@ describe('ChangelogFetcher', () => {
               title: 'foobiz-title',
               updatedAt: moment('2018-10-22T20').toISOString(),
               url: 'foobiz-url'
+            }
+          ],
+          url: 'https://github.com/biz/buz/releases/tag/futRel'
+        }
+      ]);
+    });
+
+    it('should filter pull requests by the given changedFilesPrefix', async () => {
+      const fetcher = new ChangelogFetcher({
+        base: 'foo',
+        changedFilesPrefix: 'packages/foobar/',
+        futureRelease: 'futRel',
+        owner: 'biz',
+        repo: 'buz',
+        token: 'qux'
+      });
+
+      nock('https://api.github.com')
+        .post('/graphql')
+        .times(2)
+        .reply(200, (_, requestBody) => getDataForRequest(requestBody));
+
+      const releases = await fetcher.fetchLatestChangelog();
+
+      expect(releases).toEqual([
+        {
+          createdAt: expect.any(moment),
+          name: 'futRel',
+          pullRequests: [
+            {
+              author: { login: 'foobar-user-login', url: 'foobar-user-url' },
+              mergedAt: moment('2018-10-23T10').toISOString(),
+              number: 'foobar-number',
+              title: 'foobar-title',
+              updatedAt: moment('2018-10-23T10').toISOString(),
+              url: 'foobar-url'
             }
           ],
           url: 'https://github.com/biz/buz/releases/tag/futRel'
@@ -614,26 +801,6 @@ describe('ChangelogFetcher', () => {
   });
 
   describe('getLatestRelease()', () => {
-    it('should query the client', async () => {
-      const fetcher = new ChangelogFetcher({
-        owner: 'biz',
-        repo: 'buz',
-        token: 'qux'
-      });
-
-      jest.spyOn(fetcher, 'client').mockReturnValue({
-        repository: { latestRelease: { tagCommit: { committedDate: moment('2020-01-01').toISOString() } } }
-      });
-
-      await fetcher.getLatestRelease();
-
-      expect(fetcher.client).toHaveBeenCalledTimes(1);
-      expect(fetcher.client).toHaveBeenCalledWith(expect.any(String), {
-        owner: fetcher.owner,
-        repo: fetcher.repo
-      });
-    });
-
     it('should return the latest release', async () => {
       const fetcher = new ChangelogFetcher({
         owner: 'biz',
@@ -648,10 +815,12 @@ describe('ChangelogFetcher', () => {
       const result = await fetcher.getLatestRelease();
 
       expect(result).toEqual({
+        name: 'latest-release',
         tagCommit: {
           committedDate: moment.utc(moment('2018-10-22T12').toISOString())
         },
-        tagName: 'latestRelease'
+        tagName: 'latest-release',
+        url: 'latest-release-url'
       });
     });
 
@@ -682,27 +851,64 @@ describe('ChangelogFetcher', () => {
     });
   });
 
-  describe('getRepositoryCreatedAt()', () => {
-    it('should query the client', async () => {
+  describe('getLatestReleaseByTagPrefix()', () => {
+    it('should return the latest release that starts with the given prefix', async () => {
       const fetcher = new ChangelogFetcher({
         owner: 'biz',
+        releaseTagPrefix: 'foobar-',
         repo: 'buz',
         token: 'qux'
       });
 
-      jest.spyOn(fetcher, 'client').mockReturnValue({
-        repository: { createdAt: moment('2020-01-01').toISOString() }
-      });
+      nock('https://api.github.com')
+        .post('/graphql')
+        .reply(200, (_, requestBody) => getDataForRequest(requestBody));
 
-      await fetcher.getRepositoryCreatedAt();
+      const result = await fetcher.getLatestReleaseByTagPrefix();
 
-      expect(fetcher.client).toHaveBeenCalledTimes(1);
-      expect(fetcher.client).toHaveBeenCalledWith(expect.any(String), {
-        owner: fetcher.owner,
-        repo: fetcher.repo
+      expect(result).toEqual({
+        name: 'foobar-name',
+        tagCommit: {
+          committedDate: moment.utc(moment('2018-10-23T12').toISOString())
+        },
+        tagName: 'foobar-name',
+        url: 'foobar-url'
       });
     });
 
+    it('should return a mocked latest release if the repository has no releases', async () => {
+      const fetcher = new ChangelogFetcher({
+        owner: 'biz',
+        releaseTagPrefix: 'foobar-',
+        repo: 'buz',
+        token: 'qux'
+      });
+
+      nock('https://api.github.com')
+        .post('/graphql')
+        .reply(200, (_, requestBody) => {
+          const mockData = getDataForRequest(requestBody);
+
+          mockData.data.repository.releases.nodes = [];
+
+          return mockData;
+        });
+
+      nock('https://api.github.com')
+        .post('/graphql')
+        .reply(200, (_, requestBody) => getDataForRequest(requestBody));
+
+      const result = await fetcher.getLatestReleaseByTagPrefix();
+
+      expect(result).toEqual({
+        tagCommit: {
+          committedDate: moment.utc(moment('2018-10-20T12').toISOString())
+        }
+      });
+    });
+  });
+
+  describe('getRepositoryCreatedAt()', () => {
     it('should return the date the repository was created', async () => {
       const fetcher = new ChangelogFetcher({
         owner: 'biz',
