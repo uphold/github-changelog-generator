@@ -1,7 +1,9 @@
 # github-changelog-generator
-Generate changelog files from the project's GitHub PRs
+
+Generate changelog files from the project's GitHub PRs.
 
 ## Usage
+
 Generate a new [GitHub Personal Access Token](https://github.com/settings/tokens) and save it to your `.zshrc.local`, `.bashrc.local` or similar:
 
 ```sh
@@ -19,14 +21,16 @@ $ github-changelog-generator --help
 
   Options:
 
-    -h, --help                       output usage information
-    -b, --base-branch <name>         [optional] specify the base branch name - master by default
-    -f, --future-release <version>   [optional] specify the next release version
-    -t, --future-release-tag <name>  [optional] specify the next release tag name if it is different from the release version
-    -l, --labels <names>             [optional] labels to filter pull requests by
-    -o, --owner <name>               [optional] owner of the repository
-    -r, --repo <name>                [optional] name of the repository
-    --rebuild                        rebuild the full changelog
+    -h,   --help                       output usage information
+    -b,   --base-branch <name>         [optional] specify the base branch name - master by default
+    -f,   --future-release <version>   [optional] specify the next release version
+    -t,   --future-release-tag <name>  [optional] specify the next release tag name if it is different from the release version
+    -rtp, --release-tag-prefix         [optional] release tag prefix to consider when finding the latest release, useful for monorepos
+    -cfp, --changed-files-prefix       [optional] changed files prefix to consider when finding pull-requests, useful for monorepos
+    -l,   --labels <names>             [optional] labels to filter pull requests by
+    -o,   --owner <name>               [optional] owner of the repository
+    -r,   --repo <name>                [optional] name of the repository
+    --rebuild                          rebuild the full changelog
 ```
 
 To generate a changelog for your GitHub project, use the following command:
@@ -43,12 +47,20 @@ Example:
 $ echo "$(github-changelog-generator --base-branch=production)\n$(tail -n +2 CHANGELOG.md)" > CHANGELOG.md
 ```
 
-The `--future-release` and `--future-release-tag` options are optional. If you just want to build a new changelog without a new release, you can skip those options, and `github-changelog-generator` will create a changelog for existing releases only. Also, if your future release tag name is the same as your future release version number, then you can skip `--future-release-tag`.
+The `--future-release` and `--future-release-tag` options are optional. If your future release tag name is the same as your future release version number, then you can skip `--future-release-tag`.
 
 Example:
 
 ```sh
 $ echo "$(github-changelog-generator --future-release=1.2.3 --future-release-tag=v1.2.3)\n$(tail -n +2 CHANGELOG.md)" > CHANGELOG.md
+```
+
+If you are on a mono-repository, you will need to use `--release-tag-prefix` in order to filter release tags of the package you are targeting. There's also the `--changed-files-prefix` option that may be used to specify the base directory of the package. However, this should be automatic in most cases, except when we are unable to infer the root folder.
+
+Example:
+
+```sh
+$ echo "$(github-changelog-generator --future-release=my-package@1.2.3 --future-release-tag=my-package@v1.2.3 --release-tag-prefix=my-package@v)\n$(tail -n +2 CHANGELOG.md)" > CHANGELOG.md
 ```
 
 The `--owner` and `--repo` options allow you to specify the owner and name of the GitHub repository, respectively. If omitted, they will default to the values found in the project's git config.
@@ -67,7 +79,7 @@ Example:
 $ echo "$(github-changelog-generator --labels projectX,general)\n$(tail -n +2 CHANGELOG.md)" > CHANGELOG.md
 ```
 
-The `--rebuild` option allows you to fetch the repository's full changelog history. 
+The `--rebuild` option allows you to fetch the repository's full changelog history.
 Starting on major version 2, the default behavior for the generator is to only create the changelog for the pull requests that come after the latest release,
 so this option allows for backwards compatibility.
 

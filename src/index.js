@@ -6,6 +6,7 @@
 
 const { Command } = require('commander');
 const { formatChangelog } = require('./changelog-formatter');
+const { lookItUpSync } = require('look-it-up');
 const { readFileSync } = require('fs');
 const ChangelogFetcher = require('./changelog-fetcher');
 const ini = require('ini');
@@ -28,6 +29,14 @@ program
     '-t, --future-release-tag <name>',
     '[optional] specify the next release tag name if it is different from the release version'
   )
+  .option(
+    '-rtp, --release-tag-prefix <prefix>',
+    '[optional] release tag prefix to consider when finding the latest release, useful for monorepos'
+  )
+  .option(
+    '-cfp, --changed-files-prefix <prefix>',
+    '[optional] changed files prefix to consider when finding pull-requests, useful for monorepos'
+  )
   .option('-l, --labels <names>', '[optional] labels to filter pull requests by', val => val.split(','))
   .option('-o, --owner <name>', '[optional] owner of the repository')
   .option('-r, --repo <name>', '[optional] name of the repository')
@@ -40,20 +49,18 @@ program
  */
 
 const options = program.opts();
-const base = options.baseBranch || 'master';
-const { futureRelease, futureReleaseTag, labels, rebuild } = options;
+const gitDir = lookItUpSync('.git');
+const { baseBranch = 'master', futureRelease, futureReleaseTag, labels, rebuild, releaseTagPrefix } = options;
 const token = process.env.GITHUB_TOKEN;
-let { owner, repo } = options;
+let { owner, repo, changedFilesPrefix } = options;
 
 /**
  * Infer owner and repo from git config if not provided.
  */
 
 if (!owner || !repo) {
-  const dir = path.resolve('.');
-
   try {
-    const gitconfig = readFileSync(path.join(dir, '.git/config'), 'utf-8');
+    const gitconfig = readFileSync(path.join(gitDir, 'config'), 'utf-8');
     const remoteOrigin = ini.parse(gitconfig)['remote "origin"'];
     const match = remoteOrigin.url.match(/github\.com[:/]([^/]+)\/(.+?)(?:\.git)?$/);
 
@@ -70,11 +77,30 @@ if (!owner || !repo) {
 }
 
 /**
+ * Infer changed files prefix from git directory.
+ */
+
+if (!changedFilesPrefix) {
+  changedFilesPrefix = path.relative(path.resolve(gitDir, '..'), '.').split(path.sep).join(path.posix.sep);
+}
+
+/**
  * Run the changelog generator.
  */
 
 async function run() {
-  const fetcher = new ChangelogFetcher({ base, futureRelease, futureReleaseTag, labels, owner, repo, token });
+  const fetcher = new ChangelogFetcher({
+    base: baseBranch,
+    changedFilesPrefix,
+    futureRelease,
+    futureReleaseTag,
+    labels,
+    owner,
+    releaseTagPrefix,
+    repo,
+    token
+  });
+
   const releases = await (rebuild ? fetcher.fetchFullChangelog() : fetcher.fetchLatestChangelog());
 
   formatChangelog(releases).forEach(line => process.stdout.write(line));

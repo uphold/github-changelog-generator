@@ -16,10 +16,22 @@ class ChangelogFetcher {
    * Constructor.
    */
 
-  constructor({ base, futureRelease, futureReleaseTag, labels, owner, repo, token }) {
+  constructor({
+    base,
+    changedFilesPrefix,
+    futureRelease,
+    futureReleaseTag,
+    labels,
+    owner,
+    repo,
+    token,
+    releaseTagPrefix
+  }) {
     this.base = base;
+    this.changedFilesPrefix = changedFilesPrefix;
     this.futureRelease = futureRelease;
     this.futureReleaseTag = futureReleaseTag || futureRelease;
+    this.releaseTagPrefix = releaseTagPrefix;
     this.labels = labels || [];
     this.owner = owner;
     this.repo = repo;
@@ -75,7 +87,9 @@ class ChangelogFetcher {
     }
 
     // Get the latest release.
-    const latestRelease = await this.getLatestRelease();
+    const latestRelease = this.releaseTagPrefix
+      ? await this.getLatestReleaseByTagPrefix()
+      : await this.getLatestRelease();
 
     if (latestRelease.tagName === this.futureReleaseTag) {
       throw new Error('Changelog already on the latest release');
@@ -101,13 +115,15 @@ class ChangelogFetcher {
    */
   async getLatestRelease() {
     const query = `
-    query latestRelease($owner: String!, $repo: String!) {
+    query getLatestRelease($owner: String!, $repo: String!) {
       repository(owner: $owner, name: $repo){
         latestRelease {
+          name,
           tagCommit {
             committedDate
           }
           tagName
+          url
         }
         createdAt
       }
@@ -129,7 +145,37 @@ class ChangelogFetcher {
   }
 
   /**
-   * Auxiliary function to iterage through list of PRs.
+   * Get the latest release by tag prefix.
+   *
+   * @return {Object} release - the latest release
+   */
+  async getLatestReleaseByTagPrefix() {
+    let cursor = '';
+    let hasMoreResults = true;
+    let releases = [];
+    let matchingRelease;
+
+    do {
+      ({ releases, cursor, hasMoreResults } = await this.getReleasesQuery(cursor));
+
+      matchingRelease = releases[0];
+    } while (!matchingRelease && hasMoreResults);
+
+    // For shiny new repositories without releases, use the repository creation date instead.
+    if (!matchingRelease) {
+      const repositoryCreatedAt = await this.getRepositoryCreatedAt();
+
+      return { tagCommit: { committedDate: repositoryCreatedAt } };
+    }
+
+    // Transform string timestamp into moment.
+    matchingRelease.tagCommit.committedDate = moment.utc(matchingRelease.tagCommit.committedDate);
+
+    return matchingRelease;
+  }
+
+  /**
+   * Auxiliary function to iterate through list of PRs.
    *
    * @param {String} cursor - the cursor from where the function will get the PRs
    * @param {Number} pageSize - the number of results we try to fetch each time
@@ -142,9 +188,16 @@ class ChangelogFetcher {
     const [labelsSignature, labelsParam] =
       this.labels.length === 0 ? ['', ''] : [', $labels: [String!]', ', labels: $labels'];
 
+    const filesFragment = `
+    files (first: 100) {
+      nodes {
+        path
+      }
+    }`;
+
     // TODO: replace orderBy from UPDATED_AT to MERGED_AT when available.
     const query = `
-      query pullRequestsBefore($owner: String!, $repo: String!, $first: Int!, $base: String!${cursorSignature}${labelsSignature}) {
+      query getPullRequests($owner: String!, $repo: String!, $first: Int!, $base: String!${cursorSignature}${labelsSignature}) {
         repository(owner: $owner, name: $repo) {
           pullRequests(baseRefName: $base,  first: $first, orderBy: {field: UPDATED_AT, direction: DESC}, states: [MERGED]${cursorParam}${labelsParam}) {
             nodes {
@@ -154,10 +207,11 @@ class ChangelogFetcher {
               updatedAt
               url
               baseRefName
-              author{
+              author {
                 login
                 url
               }
+              ${this.changedFilesPrefix ? filesFragment : ''}
             }
             pageInfo {
               endCursor
@@ -175,10 +229,19 @@ class ChangelogFetcher {
       repo: this.repo
     });
 
+    let pullRequests = result.repository.pullRequests.nodes;
+
+    if (this.changedFilesPrefix) {
+      pullRequests = pullRequests
+        .filter(({ files }) => files.nodes.some(file => file.path.startsWith(this.changedFilesPrefix)))
+        // eslint-disable-next-line no-unused-vars
+        .map(({ files, ...rest }) => rest);
+    }
+
     return {
       cursor: result.repository.pullRequests.pageInfo.endCursor,
       hasMoreResults: result.repository.pullRequests.pageInfo.hasNextPage,
-      pullRequests: result.repository.pullRequests.nodes
+      pullRequests
     };
   }
 
@@ -215,7 +278,7 @@ class ChangelogFetcher {
   }
 
   /**
-   * Auxiliary function to iterage through list of releases.
+   * Auxiliary function to iterate through list of releases.
    *
    * @param {String} cursor - the cursor from where the function will get the releases
    * @param {Number} pageSize - the number of results we try to fetch each time
@@ -230,6 +293,7 @@ class ChangelogFetcher {
           releases(first: $first, orderBy: {field: CREATED_AT, direction: DESC}${cursorParam}) {
             nodes {
               name
+              tagName
               tagCommit {
                 committedDate
               }
@@ -249,10 +313,16 @@ class ChangelogFetcher {
       repo: this.repo
     });
 
+    let releases = result.repository.releases.nodes;
+
+    if (this.releaseTagPrefix) {
+      releases = releases.filter(({ tagName }) => tagName.startsWith(this.releaseTagPrefix));
+    }
+
     return {
       cursor: result.repository.releases.pageInfo.endCursor,
       hasMoreResults: result.repository.releases.pageInfo.hasNextPage,
-      releases: result.repository.releases.nodes
+      releases
     };
   }
 
@@ -290,7 +360,7 @@ class ChangelogFetcher {
    */
   async getRepositoryCreatedAt() {
     const query = `
-      query repositoryCreation($owner: String!, $repo: String!) {
+      query getRepositoryCreatedAt($owner: String!, $repo: String!) {
         repository(owner: $owner, name: $repo) {
           createdAt
         }
