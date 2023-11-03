@@ -1,5 +1,8 @@
 # Changelog
 
+## [3.4.0](https://github.com/uphold/github-changelog-generator/releases/tag/v3.4.0) (2023-11-03)
+- Add support for mono-repositories [\#119](https://github.com/uphold/github-changelog-generator/pull/119) ([satazor](https://github.com/satazor))
+
 ## [3.3.1](https://github.com/uphold/github-changelog-generator/releases/tag/v3.3.1) (2022-12-20)
 - Update dev dependencies [\#113](https://github.com/uphold/github-changelog-generator/pull/113) ([goncalvesnelson](https://github.com/goncalvesnelson))
 - Bump minimist from 1.2.5 to 1.2.6 [\#104](https://github.com/uphold/github-changelog-generator/pull/104) ([dependabot](https://github.com/apps/dependabot))

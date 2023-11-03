@@ -1,6 +1,6 @@
 {
   "name": "@uphold/github-changelog-generator",
-  "version": "3.3.1",
+  "version": "3.4.0",
   "description": "Generate changelog files from the project's GitHub PRs",
   "license": "MIT",
   "author": "Ricardo Lopes",
