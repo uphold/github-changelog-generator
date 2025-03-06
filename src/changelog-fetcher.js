@@ -23,9 +23,9 @@ class ChangelogFetcher {
     futureReleaseTag,
     labels,
     owner,
+    releaseTagPrefix,
     repo,
-    token,
-    releaseTagPrefix
+    token
   }) {
     this.base = base;
     this.changedFilesPrefix = changedFilesPrefix;
@@ -35,7 +35,10 @@ class ChangelogFetcher {
     this.labels = labels || [];
     this.owner = owner;
     this.repo = repo;
-    this.client = graphql.defaults({ headers: { authorization: `token ${token}` } });
+    this.client = graphql.defaults({
+      baseUrl: 'https://api.github.com',
+      headers: { authorization: `token ${token}` }
+    });
   }
 
   /**
@@ -156,7 +159,7 @@ class ChangelogFetcher {
     let matchingRelease;
 
     do {
-      ({ releases, cursor, hasMoreResults } = await this.getReleasesQuery(cursor));
+      ({ cursor, hasMoreResults, releases } = await this.getReleasesQuery(cursor));
 
       matchingRelease = releases[0];
     } while (!matchingRelease && hasMoreResults);
@@ -338,7 +341,7 @@ class ChangelogFetcher {
     let releases = [];
 
     do {
-      ({ releases, cursor, hasMoreResults } = await this.getReleasesQuery(cursor));
+      ({ cursor, hasMoreResults, releases } = await this.getReleasesQuery(cursor));
 
       result.push(
         ...releases.map(({ name, tagCommit, url }) => ({
