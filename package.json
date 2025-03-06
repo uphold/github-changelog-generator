@@ -15,37 +15,22 @@
     "test": "jest"
   },
   "dependencies": {
-    "@octokit/graphql": "^4.8.0",
+    "@octokit/graphql": "^7.1.1",
     "commander": "^8.3.0",
     "ini": "^2.0.0",
     "look-it-up": "^2.1.0",
     "moment": "^2.29.1"
   },
   "devDependencies": {
+    "@fastify/pre-commit": "^2.2.0",
     "eslint": "^8.30.0",
-    "eslint-config-uphold": "^4.1.0",
+    "eslint-config-uphold": "^6.0.0",
     "jest": "^29.3.1",
-    "nock": "^13.2.9",
-    "pre-commit": "^1.2.2",
+    "nock": "^14.0.1",
     "prettier": "^2.8.1"
   },
   "engines": {
     "node": ">=14"
-  },
-  "jest": {
-    "collectCoverage": true,
-    "collectCoverageFrom": [
-      "src/**/*.js",
-      "!src/index.js"
-    ],
-    "modulePaths": [
-      "<rootDir>"
-    ],
-    "restoreMocks": true,
-    "setupFilesAfterEnv": [
-      "./test/setup.js"
-    ],
-    "testEnvironment": "node"
   },
   "pre-commit": {
     "run": [

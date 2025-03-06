@@ -52,7 +52,7 @@ const options = program.opts();
 const gitDir = lookItUpSync('.git');
 const { baseBranch = 'master', futureRelease, futureReleaseTag, labels, rebuild, releaseTagPrefix } = options;
 const token = process.env.GITHUB_TOKEN;
-let { owner, repo, changedFilesPrefix } = options;
+let { changedFilesPrefix, owner, repo } = options;
 
 /**
  * Infer owner and repo from git config if not provided.
