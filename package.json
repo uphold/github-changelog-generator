@@ -12,7 +12,7 @@
   "repository": "uphold/github-changelog-generator",
   "scripts": {
     "lint": "eslint --cache src test",
-    "release": "./bin/release.sh",
+    "release": "release-it",
     "test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest"
   },
   "dependencies": {

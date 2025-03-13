@@ -90,6 +90,5 @@ $ github-changelog-generator --rebuild > CHANGELOG.md
 ```
 
 ## Release
-```sh
-yarn release [<newversion> | major | minor | patch]
-```
+
+The release process is automated via the [release](https://github.com/uphold/github-changelog-generator/actions/workflows/release.yaml) GitHub workflow. Run it by clicking the "Run workflow" button.

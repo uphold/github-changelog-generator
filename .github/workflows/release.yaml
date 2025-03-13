@@ -1,0 +1,50 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      VERSION_BUMP:
+        description: 'The version bump'
+        type: choice
+        options:
+        - major
+        - minor
+        - patch
+        default: minor
+        required: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    environment: release
+    concurrency: 1
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        persist-credentials: false
+
+    - name: Setup Node.js version
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22
+
+    - name: Configure npm
+      run: npm config set //registry.npmjs.org/:_authToken ${{ secrets.RELEASE_NPM_TOKEN }}
+
+    - name: Install dependencies
+      run: |
+        npm install -g yarn@1
+        yarn install --frozen-lockfile
+
+    - name: Configure git
+      run: |
+        git config user.name "Uphold"
+        git config user.email "bot@uphold.com"
+        git config --global url.https://${{ secrets.RELEASE_GITHUB_TOKEN }}@github.com/.insteadOf https://github.com/
+
+    - name: Generate release
+      env:
+        GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
+      run: npm run release --increment "${{ github.event.inputs.VERSION_BUMP }}" -V
