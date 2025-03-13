@@ -104,6 +104,7 @@ class ChangelogFetcher {
         createdAt: moment.utc(),
         name: this.futureRelease,
         pullRequests,
+        tagName: this.futureReleaseTag,
         url: `https://github.com/${this.owner}/${this.repo}/releases/tag/${this.futureReleaseTag}`
       }
     ];
@@ -342,10 +343,11 @@ class ChangelogFetcher {
       ({ cursor, hasMoreResults, releases } = await this.getReleasesQuery(cursor));
 
       result.push(
-        ...releases.map(({ name, tagCommit, url }) => ({
+        ...releases.map(({ name, tagCommit, tagName, url }) => ({
           createdAt: moment(tagCommit.committedDate),
           name,
           pullRequests: [],
+          tagName,
           url
         }))
       );
