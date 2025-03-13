@@ -121,7 +121,7 @@ describe('ChangelogFetcher', () => {
           tagCommit: {
             committedDate: moment('2018-10-23T12').toISOString()
           },
-          tagName: 'foobar-name',
+          tagName: 'foobar-tagname',
           url: 'foobar-url'
         },
         {
@@ -129,7 +129,7 @@ describe('ChangelogFetcher', () => {
           tagCommit: {
             committedDate: moment('2018-10-22T12').toISOString()
           },
-          tagName: 'bizbaz-name',
+          tagName: 'bizbaz-tagname',
           url: 'bizbaz-url'
         }
       ];
@@ -230,6 +230,7 @@ describe('ChangelogFetcher', () => {
               url: 'foobiz-url'
             }
           ],
+          tagName: 'foobar-tagname',
           url: 'foobar-url'
         },
         {
@@ -253,6 +254,7 @@ describe('ChangelogFetcher', () => {
               url: 'barbuz-url'
             }
           ],
+          tagName: 'bizbaz-tagname',
           url: 'bizbaz-url'
         }
       ]);
@@ -295,6 +297,7 @@ describe('ChangelogFetcher', () => {
               url: 'foobiz-url'
             }
           ],
+          tagName: 'foobar-tagname',
           url: 'foobar-url'
         },
         {
@@ -318,6 +321,7 @@ describe('ChangelogFetcher', () => {
               url: 'barbuz-url'
             }
           ],
+          tagName: 'bizbaz-tagname',
           url: 'bizbaz-url'
         }
       ]);
@@ -377,6 +381,7 @@ describe('ChangelogFetcher', () => {
               url: 'barbuz-url'
             }
           ],
+          tagName: 'foobar-tagname',
           url: 'foobar-url'
         }
       ]);
@@ -413,6 +418,7 @@ describe('ChangelogFetcher', () => {
               url: 'foobiz-url'
             }
           ],
+          tagName: 'foobar-tagname',
           url: 'foobar-url'
         },
         {
@@ -428,6 +434,7 @@ describe('ChangelogFetcher', () => {
               url: 'barbiz-url'
             }
           ],
+          tagName: 'bizbaz-tagname',
           url: 'bizbaz-url'
         }
       ]);
@@ -464,12 +471,14 @@ describe('ChangelogFetcher', () => {
               url: 'foobar-url'
             }
           ],
+          tagName: 'foobar-tagname',
           url: 'foobar-url'
         },
         {
           createdAt: moment(moment('2018-10-22T12').toISOString()),
           name: 'bizbaz-name',
           pullRequests: [],
+          tagName: 'bizbaz-tagname',
           url: 'bizbaz-url'
         }
       ]);
@@ -565,6 +574,7 @@ describe('ChangelogFetcher', () => {
               url: 'foobiz-url'
             }
           ],
+          tagName: 'futRel',
           url: 'https://github.com/biz/buz/releases/tag/futRel'
         }
       ]);
@@ -616,6 +626,7 @@ describe('ChangelogFetcher', () => {
               url: 'foobiz-url'
             }
           ],
+          tagName: 'futRel',
           url: 'https://github.com/biz/buz/releases/tag/futRel'
         }
       ]);
@@ -652,6 +663,7 @@ describe('ChangelogFetcher', () => {
               url: 'quxfoo-url'
             }
           ],
+          tagName: 'futRel',
           url: 'https://github.com/biz/buz/releases/tag/futRel'
         }
       ]);
@@ -696,6 +708,7 @@ describe('ChangelogFetcher', () => {
               url: 'foobiz-url'
             }
           ],
+          tagName: 'futRel',
           url: 'https://github.com/biz/buz/releases/tag/futRel'
         }
       ]);
@@ -732,6 +745,7 @@ describe('ChangelogFetcher', () => {
               url: 'foobar-url'
             }
           ],
+          tagName: 'futRel',
           url: 'https://github.com/biz/buz/releases/tag/futRel'
         }
       ]);
@@ -870,7 +884,7 @@ describe('ChangelogFetcher', () => {
         tagCommit: {
           committedDate: moment.utc(moment('2018-10-23T12').toISOString())
         },
-        tagName: 'foobar-name',
+        tagName: 'foobar-tagname',
         url: 'foobar-url'
       });
     });
