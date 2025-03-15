@@ -30,7 +30,7 @@
     "prettier": "^2.8.1"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=20"
   },
   "pre-commit": {
     "run": [
