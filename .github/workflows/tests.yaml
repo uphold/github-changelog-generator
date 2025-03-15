@@ -7,13 +7,15 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [ '14', '16', '18' ]
+        node: [ '20', '22' ]
 
-    container:
-      image: node:${{ matrix.node }}-alpine
+    name: Node ${{ matrix.node }}
 
     steps:
-    - uses: actions/checkout@v2
-    - run: yarn install --frozen-lockfile
-    - run: yarn lint
-    - run: yarn test
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - run: yarn install --frozen-lockfile
+      - run: yarn lint
+      - run: yarn test
