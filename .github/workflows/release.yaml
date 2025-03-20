@@ -48,4 +48,4 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
         NPM_TOKEN: ${{ secrets.RELEASE_NPM_TOKEN }}
-      run: npm run release --increment "${{ github.event.inputs.VERSION_BUMP }}" -V
+      run: npm run release -- --increment "${{ github.event.inputs.VERSION_BUMP }}" -V
