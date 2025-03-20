@@ -1,11 +1,9 @@
-'use strict';
-
 /**
  * Module dependencies.
  */
 
-const { graphql } = require('@octokit/graphql');
-const moment = require('moment');
+import { graphql } from '@octokit/graphql';
+import moment from 'moment';
 
 /**
  * `ChangelogFetcher` class.
@@ -378,4 +376,4 @@ class ChangelogFetcher {
  * Export `ChangelogFetcher`.
  */
 
-module.exports = ChangelogFetcher;
+export default ChangelogFetcher;

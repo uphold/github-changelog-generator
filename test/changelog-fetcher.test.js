@@ -1,12 +1,11 @@
-'use strict';
-
 /**
  * Module dependencies.
  */
 
-const ChangelogFetcher = require('../src/changelog-fetcher');
-const moment = require('moment');
-const nock = require('nock');
+import { jest } from '@jest/globals';
+import ChangelogFetcher from '../src/changelog-fetcher.js';
+import moment from 'moment';
+import nock from 'nock';
 
 /**
  * Test `ChangelogFetcher`.

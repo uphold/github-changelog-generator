@@ -1,16 +1,14 @@
-'use strict';
-
 /**
  * Module dependencies.
  */
 
-const { Command } = require('commander');
-const { formatChangelog } = require('./changelog-formatter');
-const { lookItUpSync } = require('look-it-up');
-const { readFileSync } = require('fs');
-const ChangelogFetcher = require('./changelog-fetcher');
-const ini = require('ini');
-const path = require('path');
+import { Command } from 'commander';
+import { formatChangelog } from './changelog-formatter.js';
+import { lookItUpSync } from 'look-it-up';
+import { readFileSync } from 'node:fs';
+import ChangelogFetcher from './changelog-fetcher.js';
+import ini from 'ini';
+import path from 'node:path';
 
 /**
  * Instances.
