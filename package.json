@@ -30,6 +30,7 @@
   },
   "devDependencies": {
     "@fastify/pre-commit": "^2.2.0",
+    "@types/node": "^22.13.10",
     "eslint": "^8.30.0",
     "eslint-config-uphold": "^6.0.0",
     "jest": "^29.3.1",
