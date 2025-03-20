@@ -7,9 +7,15 @@
   "main": "src/index.js",
   "type": "module",
   "bin": {
-    "github-changelog-generator": "./bin/github-changelog-generator.js"
+    "github-changelog-generator": "bin/github-changelog-generator.js"
   },
-  "repository": "uphold/github-changelog-generator",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/uphold/github-changelog-generator.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "lint": "eslint --cache src test",
     "release": "release-it",
