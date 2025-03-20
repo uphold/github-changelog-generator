@@ -5,6 +5,7 @@
   "license": "MIT",
   "author": "Ricardo Lopes",
   "main": "src/index.js",
+  "type": "module",
   "bin": {
     "github-changelog-generator": "./bin/github-changelog-generator.js"
   },
@@ -12,10 +13,10 @@
   "scripts": {
     "lint": "eslint --cache src test",
     "release": "./bin/release.sh",
-    "test": "jest"
+    "test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest"
   },
   "dependencies": {
-    "@octokit/graphql": "^7.1.1",
+    "@octokit/graphql": "^8.2.1",
     "commander": "^8.3.0",
     "ini": "^2.0.0",
     "look-it-up": "^2.1.0",

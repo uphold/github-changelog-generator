@@ -4,7 +4,7 @@
  * Export `formatChangelog`.
  */
 
-module.exports.formatChangelog = releases => {
+export const formatChangelog = releases => {
   const changelog = ['# Changelog\n'];
 
   for (const release of releases) {

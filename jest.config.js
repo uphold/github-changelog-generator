@@ -1,4 +1,4 @@
-const jestConfig = {
+export default {
   clearMocks: true,
   collectCoverage: true,
   collectCoverageFrom: ['src/**/*.js', '!src/index.js'],
@@ -6,7 +6,5 @@ const jestConfig = {
   restoreMocks: true,
   setupFilesAfterEnv: ['<rootDir>/test/setup.js'],
   testEnvironment: 'node',
-  transformIgnorePatterns: ['/node_modules/(?!@octokit/fixtures)']
+  transform: {}
 };
-
-module.exports = jestConfig;

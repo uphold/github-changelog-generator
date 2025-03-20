@@ -1,11 +1,9 @@
-'use strict';
-
 /**
  * Module dependencies.
  */
 
-const { formatChangelog } = require('../src/changelog-formatter');
-const moment = require('moment');
+import { formatChangelog } from '../src/changelog-formatter.js';
+import moment from 'moment';
 
 /**
  * Test `ChangelogFormatter`.

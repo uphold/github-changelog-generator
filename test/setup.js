@@ -1,10 +1,8 @@
-'use strict';
-
 /**
  * Module dependencies.
  */
 
-const nock = require('nock');
+import nock from 'nock';
 
 /**
  * Disable any type of net connection.
