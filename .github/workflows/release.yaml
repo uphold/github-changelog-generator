@@ -47,4 +47,9 @@ jobs:
     - name: Generate release
       env:
         GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
-      run: npm run release --increment "${{ github.event.inputs.VERSION_BUMP }}" -V
+        NODE_AUTH_TOKEN: ${{ secrets.RELEASE_NPM_TOKEN }}
+      run: |
+        npm config list
+        npm whoami
+        npm view @uphold/github-changelog-generator || echo "Package not found"
+        npm run release --increment "${{ github.event.inputs.VERSION_BUMP }}" -VV
