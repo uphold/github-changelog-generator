@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   git: {
     changelog: 'echo "## Changelog\\n\\n$(bin/github-changelog-generator.js -f unreleased | tail -n +4 -f)"',
     commitMessage: 'Release ${version}',
