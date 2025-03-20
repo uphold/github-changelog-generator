@@ -1,5 +1,15 @@
 # Changelog
 
+## [4.0.0](https://github.com/uphold/github-changelog-generator/releases/tag/4.0.0) (2025-03-20)
+
+- Remove debug from release workflow [\#128](https://github.com/uphold/github-changelog-generator/pull/128) ([Americas](https://github.com/Americas))
+- Debug release workflow [\#127](https://github.com/uphold/github-changelog-generator/pull/127) ([Americas](https://github.com/Americas))
+- Fix `package.json` configuration [\#126](https://github.com/uphold/github-changelog-generator/pull/126) ([risantos](https://github.com/risantos))
+- Add release-it as a dev dependency [\#125](https://github.com/uphold/github-changelog-generator/pull/125) ([Americas](https://github.com/Americas))
+- Update release workflow [\#123](https://github.com/uphold/github-changelog-generator/pull/123) ([risantos](https://github.com/risantos))
+- Update CHANGELOG format output [\#122](https://github.com/uphold/github-changelog-generator/pull/122) ([risantos](https://github.com/risantos))
+- Bump dependencies to fix security vulnerabilities [\#121](https://github.com/uphold/github-changelog-generator/pull/121) ([risantos](https://github.com/risantos))
+
 ## [v3.4.0](https://github.com/uphold/github-changelog-generator/releases/tag/v3.4.0) (2023-11-03)
 
 - Add support for mono-repositories [\#119](https://github.com/uphold/github-changelog-generator/pull/119) ([satazor](https://github.com/satazor))
