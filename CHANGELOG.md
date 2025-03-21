@@ -1,5 +1,9 @@
 # Changelog
 
+## [v4.0.2](https://github.com/uphold/github-changelog-generator/releases/tag/v4.0.2) (2025-03-21)
+
+- Switch release-it config to CommonJS [\#131](https://github.com/uphold/github-changelog-generator/pull/131) ([Americas](https://github.com/Americas))
+
 ## [4.0.1](https://github.com/uphold/github-changelog-generator/releases/tag/4.0.1) (2025-03-20)
 
 - Update release process configuration [\#130](https://github.com/uphold/github-changelog-generator/pull/130) ([risantos](https://github.com/risantos))
