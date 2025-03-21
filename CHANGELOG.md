@@ -4,12 +4,12 @@
 
 - Switch release-it config to CommonJS [\#131](https://github.com/uphold/github-changelog-generator/pull/131) ([Americas](https://github.com/Americas))
 
-## [4.0.1](https://github.com/uphold/github-changelog-generator/releases/tag/4.0.1) (2025-03-20)
+## [v4.0.1](https://github.com/uphold/github-changelog-generator/releases/tag/4.0.1) (2025-03-20)
 
 - Update release process configuration [\#130](https://github.com/uphold/github-changelog-generator/pull/130) ([risantos](https://github.com/risantos))
 - Update release-it file type and CHANGELOG [\#129](https://github.com/uphold/github-changelog-generator/pull/129) ([risantos](https://github.com/risantos))
 
-## [4.0.0](https://github.com/uphold/github-changelog-generator/releases/tag/4.0.0) (2025-03-20)
+## [v4.0.0](https://github.com/uphold/github-changelog-generator/releases/tag/4.0.0) (2025-03-20)
 
 - Remove debug from release workflow [\#128](https://github.com/uphold/github-changelog-generator/pull/128) ([Americas](https://github.com/Americas))
 - Debug release workflow [\#127](https://github.com/uphold/github-changelog-generator/pull/127) ([Americas](https://github.com/Americas))

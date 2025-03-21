@@ -88,7 +88,7 @@ describe('ChangelogFormatter', () => {
 
       expect(formatChangelog(releases)).toEqual([
         '# Changelog\n',
-        '\n## [foo-tag](foo-url) (2018-10-23)\n\n',
+        '\n## [foo-name](foo-url) (2018-10-23)\n\n',
         '- foobar-title [\\#foobar-number](foobar-url) ([foobar-user-login](foobar-user-url))\n',
         '- foobiz-title [\\#foobiz-number](foobiz-url) ([foobiz-user-login](foobiz-user-url))\n',
         '\n## [bar-tag](bar-url) (2018-10-22)\n\n',
