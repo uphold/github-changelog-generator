@@ -1,10 +1,15 @@
 'use strict';
 
 /**
- * Export `formatChangelog`.
+ * Formats the changelog based on the provided releases.
+ * - The output is a markdown formatted changelog, which includes:
+ *  - Release name and URL.
+ *  - Pull request titles and authors.
+ *
+ * @param {ChangelogGenerator.Release[]} releases - List of releases to format.
+ * @returns {string[]} Formatted changelog.
  */
-
-export const formatChangelog = releases => {
+function formatChangelog(releases) {
   const changelog = ['# Changelog\n'];
 
   for (const release of releases) {
@@ -18,4 +23,10 @@ export const formatChangelog = releases => {
   }
 
   return changelog;
-};
+}
+
+/**
+ * Export `formatChangelog`.
+ */
+
+export { formatChangelog };

@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "checkJs": true,
+    "paths": {
+      "bin/*": ["./bin/*"],
+      "src/*": ["./src/*"],
+      "test/*": ["./test/*"]
+    },
+    "resolveJsonModule": true,
+    "skipLibCheck": true
+  },
+  "exclude": ["node_modules", "coverage"],
+  "typeAcquisition": {
+    "enable": true
+  }
+}

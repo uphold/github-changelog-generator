@@ -165,7 +165,7 @@ describe('ChangelogFetcher', () => {
         changedFilesPrefix: 'foz',
         futureRelease: 'bar',
         futureReleaseTag: 'baz',
-        labels: 'bez',
+        labels: ['bez'],
         owner: 'biz',
         releaseTagPrefix: 'boz',
         repo: 'buz',
@@ -176,7 +176,7 @@ describe('ChangelogFetcher', () => {
       expect(fetcher.changedFilesPrefix).toEqual('foz');
       expect(fetcher.futureRelease).toEqual('bar');
       expect(fetcher.futureReleaseTag).toEqual('baz');
-      expect(fetcher.labels).toEqual('bez');
+      expect(fetcher.labels).toEqual(['bez']);
       expect(fetcher.owner).toEqual('biz');
       expect(fetcher.releaseTagPrefix).toEqual('boz');
       expect(fetcher.repo).toEqual('buz');
@@ -184,7 +184,10 @@ describe('ChangelogFetcher', () => {
 
     it('should set default values', () => {
       const fetcher = new ChangelogFetcher({
+        base: 'master',
         futureRelease: 'foo',
+        owner: 'biz',
+        repo: 'buz',
         token: 'bar'
       });
 
@@ -507,7 +510,7 @@ describe('ChangelogFetcher', () => {
         token: 'qux'
       });
 
-      jest.spyOn(fetcher, 'client').mockReturnValue({
+      jest.spyOn(fetcher, 'client').mockResolvedValue({
         repository: {
           latestRelease: {
             tagCommit: {
@@ -521,7 +524,7 @@ describe('ChangelogFetcher', () => {
       try {
         await fetcher.fetchLatestChangelog();
 
-        jest.fail();
+        fail();
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
         expect(e.message).toBe('Changelog already on the latest release');
@@ -766,7 +769,7 @@ describe('ChangelogFetcher', () => {
         .times(1)
         .reply(200, (_, requestBody) => getDataForRequest(requestBody));
 
-      jest.spyOn(fetcher, 'getLatestRelease').mockReturnValue({ tagCommit: { committedDate: startDate } });
+      jest.spyOn(fetcher, 'getLatestRelease').mockResolvedValue({ tagCommit: { committedDate: startDate } });
       jest.spyOn(startDate, 'isAfter');
       jest.spyOn(startDate, 'isBefore');
 
@@ -796,7 +799,7 @@ describe('ChangelogFetcher', () => {
         .times(1)
         .reply(200, (_, requestBody) => getDataForRequest(requestBody));
 
-      jest.spyOn(fetcher, 'getLatestRelease').mockReturnValue({ tagCommit: { committedDate: startDate } });
+      jest.spyOn(fetcher, 'getLatestRelease').mockResolvedValue({ tagCommit: { committedDate: startDate } });
       jest.spyOn(startDate, 'isAfter');
       jest.spyOn(startDate, 'isBefore');
 
@@ -816,6 +819,7 @@ describe('ChangelogFetcher', () => {
   describe('getLatestRelease()', () => {
     it('should return the latest release', async () => {
       const fetcher = new ChangelogFetcher({
+        base: 'master',
         owner: 'biz',
         repo: 'buz',
         token: 'qux'
@@ -839,6 +843,7 @@ describe('ChangelogFetcher', () => {
 
     it('should return a mocked latest release if the repository has no releases', async () => {
       const fetcher = new ChangelogFetcher({
+        base: 'master',
         owner: 'biz',
         repo: 'buz',
         token: 'qux'
@@ -867,6 +872,7 @@ describe('ChangelogFetcher', () => {
   describe('getLatestReleaseByTagPrefix()', () => {
     it('should return the latest release that starts with the given prefix', async () => {
       const fetcher = new ChangelogFetcher({
+        base: 'master',
         owner: 'biz',
         releaseTagPrefix: 'foobar-',
         repo: 'buz',
@@ -891,6 +897,7 @@ describe('ChangelogFetcher', () => {
 
     it('should return a mocked latest release if the repository has no releases', async () => {
       const fetcher = new ChangelogFetcher({
+        base: 'master',
         owner: 'biz',
         releaseTagPrefix: 'foobar-',
         repo: 'buz',
@@ -924,6 +931,7 @@ describe('ChangelogFetcher', () => {
   describe('getRepositoryCreatedAt()', () => {
     it('should return the date the repository was created', async () => {
       const fetcher = new ChangelogFetcher({
+        base: 'master',
         owner: 'biz',
         repo: 'buz',
         token: 'qux'
