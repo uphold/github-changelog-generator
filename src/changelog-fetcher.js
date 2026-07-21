@@ -12,8 +12,9 @@ import moment from 'moment';
 class ChangelogFetcher {
   /**
    * Constructor.
+   *
+   * @param {ChangelogGenerator.FetcherOptions} options - Options for the ChangelogFetcher.
    */
-
   constructor({
     base,
     changedFilesPrefix,
@@ -42,7 +43,7 @@ class ChangelogFetcher {
   /**
    * Fetch the full changelog.
    *
-   * @return {Array} releases - An array of objects with information about the all releases
+   * @return {Promise<ChangelogGenerator.Release[]>} An array of objects with information about the all releases.
    */
   async fetchFullChangelog() {
     // Get the date the repository was created.
@@ -79,7 +80,7 @@ class ChangelogFetcher {
   /**
    * Fetch changelog after the latest release.
    *
-   * @return {Array} releases - An array with an object with information about the latest release
+   * @return {Promise<ChangelogGenerator.Release[]>} releases - An array with an object with information about the latest release
    */
   async fetchLatestChangelog() {
     // Don't do anything if a futureRelease was not specified.
@@ -113,7 +114,7 @@ class ChangelogFetcher {
   /**
    * Get the latest release.
    *
-   * @return {Object} release - the latest release
+   * @return {Promise<ChangelogGenerator.Release>} release - the latest release
    */
   async getLatestRelease() {
     const query = `
@@ -149,7 +150,7 @@ class ChangelogFetcher {
   /**
    * Get the latest release by tag prefix.
    *
-   * @return {Object} release - the latest release
+   * @return {Promise<ChangelogGenerator.Release>} release - the latest release
    */
   async getLatestReleaseByTagPrefix() {
     let cursor = '';
@@ -179,10 +180,9 @@ class ChangelogFetcher {
   /**
    * Auxiliary function to iterate through list of PRs.
    *
-   * @param {String} cursor - the cursor from where the function will get the PRs
-   * @param {Number} pageSize - the number of results we try to fetch each time
-   * @return {Map} {cursor, hasMoreResults, pullRequests} - An array of maps with information about the last PRs
-   *                                                        starting from cursor (from newest to oldest)
+   * @param {string} cursor - the cursor from where the function will get the PRs
+   * @param {number} pageSize - the number of results we try to fetch each time
+   * @return {Promise<ChangelogGenerator.GetPullRequestQueryResponse>} A promise that resolves to a new page of Pull Requests' results.
    */
   async getPullRequestsQuery(cursor = '', pageSize = 30) {
     const [cursorSignature, cursorParam] = cursor ? [', $cursor: String!', ', after: $cursor'] : ['', ''];
@@ -250,8 +250,8 @@ class ChangelogFetcher {
   /**
    * Get the list of approved pull requests merged after a given timestamp.
    *
-   * @param {moment} startDate - the timestamp of the release after which we want to retrieve the pull requests
-   * @return {Array} pullRequests - An array of maps with information about the pull requests
+   * @param {moment.Moment} startDate - the timestamp of the release after which we want to retrieve the pull requests
+   * @return {Promise<ChangelogGenerator.PullRequest[]>} pullRequests - An array of maps with information about the pull requests
    */
   async getPullRequestsStartingFrom(startDate) {
     const result = [];
@@ -282,10 +282,9 @@ class ChangelogFetcher {
   /**
    * Auxiliary function to iterate through list of releases.
    *
-   * @param {String} cursor - the cursor from where the function will get the releases
-   * @param {Number} pageSize - the number of results we try to fetch each time
-   * @return {Map} {cursor, hasMoreResults, releases} - An array of maps with information about the last releases
-   *                                                    starting from cursor (from newest to oldest)
+   * @param {string} cursor - the cursor from where the function will get the releases
+   * @param {number} pageSize - the number of results we try to fetch each time
+   * @return {Promise<ChangelogGenerator.GetReleasesQueryResponse>} A promise that resolves to a new page of Releases' results starting from cursor (from newest to oldest)
    */
   async getReleasesQuery(cursor = '', pageSize = 30) {
     const [cursorSignature, cursorParam] = cursor ? [', $cursor: String!', ', after: $cursor'] : ['', ''];
@@ -331,7 +330,7 @@ class ChangelogFetcher {
   /**
    * Get the list of all releases of the repository.
    *
-   * @return {Array} releases - An array of objects with information about the releases
+   * @return {Promise<ChangelogGenerator.Release[]>} releases - An array of objects with information about the releases
    */
   async getReleases() {
     const result = [];
@@ -357,9 +356,9 @@ class ChangelogFetcher {
   }
 
   /**
-   * Get the date that the repository was created.
+   * Get the repository's creation date.
    *
-   * @return {moment} createdAt - the date the repository was created
+   * @return {Promise<moment.Moment>} Repository's `createdAt`.
    */
   async getRepositoryCreatedAt() {
     const query = `
